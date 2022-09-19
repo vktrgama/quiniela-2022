@@ -1,6 +1,6 @@
 # Quiniela WorldCup 2022 Qatar
 
-This project is redo React version of my [Quiniela for WorldCup 2018](https://github.com/vktrgama/quiniela).
+This project is redo React version of my [Quiniela for WorldCup 2018](https://github.com/vktrgama/quiniela). (may not happen, too little time)
 
 ### Design and Architecture
 
