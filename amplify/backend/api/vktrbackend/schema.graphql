@@ -3,10 +3,32 @@
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
 type Matches @model {
-  id: ID!
+  id: ID! @primaryKey(sortKeyFields: ["Order"])
   TeamA: String
-  TypeA: String
+  ScoreA: String
   TeamB: String
-  TypeB: String
+  ScoreB: String
+  Order: Int!
+  Schedule: String
+  Location: String
+  Year: Int
+}
+
+type MatchesResults @model {
+  id: ID!
+  UserName: String
+  MatchId: String
+  TeamA: String
+  ScoreA: String
+  TeamB: String
+  ScoreB: String
+  Year: Int
+}
+
+type UserPoints @model {
+  id: ID!
+  UserName: String
+  Total: Int
+  Active: Boolean
   Year: Int
 }

@@ -9,9 +9,12 @@ export const createMatches = /* GraphQL */ `
     createMatches(input: $input, condition: $condition) {
       id
       TeamA
-      TypeA
+      ScoreA
       TeamB
-      TypeB
+      ScoreB
+      Order
+      Schedule
+      Location
       Year
       createdAt
       updatedAt
@@ -26,9 +29,12 @@ export const updateMatches = /* GraphQL */ `
     updateMatches(input: $input, condition: $condition) {
       id
       TeamA
-      TypeA
+      ScoreA
       TeamB
-      TypeB
+      ScoreB
+      Order
+      Schedule
+      Location
       Year
       createdAt
       updatedAt
@@ -43,9 +49,117 @@ export const deleteMatches = /* GraphQL */ `
     deleteMatches(input: $input, condition: $condition) {
       id
       TeamA
-      TypeA
+      ScoreA
       TeamB
-      TypeB
+      ScoreB
+      Order
+      Schedule
+      Location
+      Year
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createMatchesResults = /* GraphQL */ `
+  mutation CreateMatchesResults(
+    $input: CreateMatchesResultsInput!
+    $condition: ModelMatchesResultsConditionInput
+  ) {
+    createMatchesResults(input: $input, condition: $condition) {
+      id
+      UserName
+      MatchId
+      TeamA
+      ScoreA
+      TeamB
+      ScoreB
+      Year
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateMatchesResults = /* GraphQL */ `
+  mutation UpdateMatchesResults(
+    $input: UpdateMatchesResultsInput!
+    $condition: ModelMatchesResultsConditionInput
+  ) {
+    updateMatchesResults(input: $input, condition: $condition) {
+      id
+      UserName
+      MatchId
+      TeamA
+      ScoreA
+      TeamB
+      ScoreB
+      Year
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteMatchesResults = /* GraphQL */ `
+  mutation DeleteMatchesResults(
+    $input: DeleteMatchesResultsInput!
+    $condition: ModelMatchesResultsConditionInput
+  ) {
+    deleteMatchesResults(input: $input, condition: $condition) {
+      id
+      UserName
+      MatchId
+      TeamA
+      ScoreA
+      TeamB
+      ScoreB
+      Year
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createUserPoints = /* GraphQL */ `
+  mutation CreateUserPoints(
+    $input: CreateUserPointsInput!
+    $condition: ModelUserPointsConditionInput
+  ) {
+    createUserPoints(input: $input, condition: $condition) {
+      id
+      UserName
+      Total
+      Active
+      Year
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateUserPoints = /* GraphQL */ `
+  mutation UpdateUserPoints(
+    $input: UpdateUserPointsInput!
+    $condition: ModelUserPointsConditionInput
+  ) {
+    updateUserPoints(input: $input, condition: $condition) {
+      id
+      UserName
+      Total
+      Active
+      Year
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteUserPoints = /* GraphQL */ `
+  mutation DeleteUserPoints(
+    $input: DeleteUserPointsInput!
+    $condition: ModelUserPointsConditionInput
+  ) {
+    deleteUserPoints(input: $input, condition: $condition) {
+      id
+      UserName
+      Total
+      Active
       Year
       createdAt
       updatedAt
