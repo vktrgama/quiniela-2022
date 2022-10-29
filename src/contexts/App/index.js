@@ -1,5 +1,10 @@
 import * as React from 'react';
+import { Auth } from 'aws-amplify';
+
 const AppContext = React.createContext([]);
+const actions = {
+    LOGIN: 'LOGIN',
+};
 
 /**
  * Intial State for AppContext
@@ -30,7 +35,7 @@ const initialState = {
 
 const reducer = (state, action) => {
     switch (action.type) {
-        case 'LOGIN': {
+        case actions.LOGIN: {
             return { ...state, user: action.payload };
         }
         case 'FAILED-LOGIN': {
@@ -62,9 +67,15 @@ const useApp = () => {
 
     const [appState, dispatch] = context;
 
+    async function getUserInfo() {
+        const user = await Auth.currentAuthenticatedUser();
+        dispatch(actions.LOGIN, user )
+    };
+
     return {
         appState,
         dispatch,
+        getUserInfo,
     };
 };
 
