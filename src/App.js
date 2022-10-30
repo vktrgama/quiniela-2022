@@ -11,6 +11,7 @@ import Rules from './features/rules'
 import Matches from './features/matches'
 import Participants from './features/participants'
 import UserMatches from './features/user'
+import Admin from "./features/admin";
 import './App.css';
 
 
@@ -26,6 +27,7 @@ function App() {
                 <Route path="/matches" element={<Matches/>} />
                 <Route path="/participants" element={<Participants/>}/>
                 <Route path="/user" element={<UserMatches/>}/>
+                <Route path="/admin" element={<Admin />} />
                 <Route exact path="/signin" element={<div>this are the login</div>} />
                 <Route path="*" element={<div>nopage</div>} />
           </Routes>

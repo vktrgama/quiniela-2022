@@ -25,6 +25,10 @@ const initialState = {
             path: '/user',
             title: 'User Matches',
         },
+        {
+            path: '/admin',
+            title: 'admin Matches',
+        },
     ],
 };
 
