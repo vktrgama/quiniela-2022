@@ -5,7 +5,6 @@ import {
   Button,
   Flex,
   Heading,
-  Text,
   TextField,
   View,
   withAuthenticator,
@@ -14,10 +13,13 @@ import { listMatches } from "../graphql/queries";
 import {
   createMatches as createMatchesMutation,
   deleteMatches as deleteMatcheseMutation,
+  updateMatches as updateMatchesMutation,
 } from "../graphql/mutations";
-import { Input } from "@mui/material";
+import { useApp } from '../contexts/App';
+import AdminScores from './admin-scores';
 
 const Matches = ({ signOut, user }) => {
+  const { appState } = useApp();
   const [matches, setMatches] = useState([]);
 
   useEffect(() => {
@@ -36,11 +38,11 @@ const Matches = ({ signOut, user }) => {
     const data = {
       TeamA: form.get("teamA"),
       TeamB: form.get("teamB"),
-      Order: form.get("sort"),
+      Order: form.get("order"),
       ScoreA: 0,
       ScoreB: 0,
       Schedule: '',
-      Location: '',
+      Location: form.get("location"),
       Year: 2022,
     };
     await API.graphql({
@@ -51,21 +53,43 @@ const Matches = ({ signOut, user }) => {
     event.target.reset();
   }
 
-  async function deleteNote({ id }) {
-    const newNotes = matches.filter((note) => note.id !== id);
-    setMatches(newNotes);
+  const deleteMatch = async (id) => {
     await API.graphql({
       query: deleteMatcheseMutation,
       variables: { input: { id } },
     });
+    const newMatches = matches.filter((match) => match.id !== id);
+    setMatches(newMatches);
+  }
+
+  const updateMatch = async (updatedRow) => {
+    const data = {
+      id: updatedRow.id,
+      ScoreA: updatedRow.ScoreA,
+      ScoreB: updatedRow.ScoreB,
+    };
+    await API.graphql({
+      query: updateMatchesMutation,
+      variables: { input: data },
+    });
+    setMatches(matches.map((match) => (match.id === updatedRow.id ? updatedRow : match)));
   }
 
   return (
     <View className="App">
         <Heading level={1}>World Cup Matches 2022</Heading>
-        <h1>{process.env.REACT_APP_WM}</h1>
+        <h1>User: {appState.user.username || '<not found>' }</h1>
+        <Button onClick={signOut}>Sign Out</Button>
         <View as="form" margin="3rem 0" onSubmit={createMatch}>
             <Flex direction="row" justifyContent="center">
+            <TextField
+                name="order"
+                placeholder="Match Number"
+                label="Match Number"
+                labelHidden
+                variation="quiet"
+                required
+            />
             <TextField
                 name="teamA"
                 placeholder="Match Team A"
@@ -82,37 +106,21 @@ const Matches = ({ signOut, user }) => {
                 variation="quiet"
                 required
             />
-            <Input name="sort" label="Sort" variation="quiet" required/>
+            <TextField
+                name="location"
+                placeholder="Location"
+                label="Stadium, Location"
+                labelHidden
+                variation="quiet"
+            />
             <Button type="submit" variation="primary">
                 Create Match
             </Button>
             </Flex>
         </View>
 
-        <Heading level={2}>Current Matches</Heading>
-        <View margin="3rem 0">
-            {matches.map((match) => (
-            <Flex
-                key={match.id}
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-            >
-                <Text as="strong">
-                {match.TeamA}
-                </Text>
-                <Text as="strong">
-                {match.TeamB}
-                </Text>
-                <Text as="strong">
-                {match.Order}
-                </Text>
-                <Button variation="link" onClick={() => deleteNote(match)}>
-                Delete Match
-                </Button>
-            </Flex>
-            ))}
-        </View>
+        <Heading level={2}>Update Final Scores</Heading>
+        <AdminScores rows={matches} onDeleteMatch={deleteMatch} onUpdateMatch={updateMatch} />
     </View>
   );
 };

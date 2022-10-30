@@ -1,43 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { DataGrid, GridActionsCellItem, GridRowModes } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { withAuthenticator } from "@aws-amplify/ui-react";
-import { listMatches } from "../graphql/queries";
-import { API } from "aws-amplify";
-import {
-  updateMatches as updateMatchesMutation,
-} from "../graphql/mutations";
 
-const UserMatches = () => {
-    const [rows, setRows] = React.useState([]);
-
-    useEffect(() => {
-        fetchMatches();
-    }, []);
-
-    async function fetchMatches() {
-      const apiData = await API.graphql({ query: listMatches });
-      const matchesFromAPI = apiData.data.listMatches.items;
-
-      matchesFromAPI.sort((a, b) => a.Order - b.Order);
-      const rows = matchesFromAPI.map(m => {
-        return {
-          id: m.id,
-          Match: m.Order,
-          TeamA: m.TeamA,
-          ScoreA: m.ScoreA,
-          TeamB: m.TeamB,
-          ScoreB: m.ScoreB,
-          Location: m.Location,
-          Date: m.Schedule
-        }
-      });
-      setRows(rows);
-    }
+const AdminMatches = ({rows, onDeleteMatch, onUpdateMatch}) => {
     
     const [rowModesModel, setRowModesModel] = React.useState({});
 
@@ -62,26 +33,15 @@ const UserMatches = () => {
             ...rowModesModel,
             [id]: { mode: GridRowModes.View, ignoreModifications: true },
         });
+    };
 
-        const editedRow = rows.find((row) => row.id === id);
-        if (editedRow.isNew) {
-            setRows(rows.filter((row) => row.id !== id));
-        }
+    const handleDeleteClick = (id) => () => {
+        onDeleteMatch(id);
     };
 
     const processRowUpdate = async (newRow) => {
-        const data = {
-          id: newRow.id,
-          ScoreA: newRow.ScoreA,
-          ScoreB: newRow.ScoreB,
-        };
-        await API.graphql({
-          query: updateMatchesMutation,
-          variables: { input: data },
-        });
-
         const updatedRow = { ...newRow, isNew: false };
-        setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+        onUpdateMatch(updatedRow);
         return updatedRow;
     };
     
@@ -104,20 +64,20 @@ const UserMatches = () => {
             const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
             if (isInEditMode) {
-            return [
-                <GridActionsCellItem
-                  icon={<SaveIcon />}
-                  label="Save"
-                  onClick={handleSaveClick(id)}
-                />,
-                <GridActionsCellItem
-                  icon={<CancelIcon />}
-                  label="Cancel"
-                  className="textPrimary"
-                  onClick={handleCancelClick(id)}
-                  color="inherit"
-                />,
-            ];
+                return [
+                    <GridActionsCellItem
+                    icon={<SaveIcon />}
+                    label="Save"
+                    onClick={handleSaveClick(id)}
+                    />,
+                    <GridActionsCellItem
+                    icon={<CancelIcon />}
+                    label="Cancel"
+                    className="textPrimary"
+                    onClick={handleCancelClick(id)}
+                    color="inherit"
+                    />,
+                ];
             }
 
             return [
@@ -126,6 +86,12 @@ const UserMatches = () => {
                 label="Edit"
                 className="textPrimary"
                 onClick={handleEditClick(id)}
+                color="inherit"
+            />,
+            <GridActionsCellItem
+                icon={<DeleteIcon />}
+                label="Delete"
+                onClick={handleDeleteClick(id)}
                 color="inherit"
             />,
             ];
@@ -154,4 +120,4 @@ const UserMatches = () => {
   );
 }
 
-export default withAuthenticator(UserMatches);
+export default withAuthenticator(AdminMatches);

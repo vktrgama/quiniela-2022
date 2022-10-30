@@ -1,13 +1,17 @@
 import * as React from 'react';
+import { Auth } from 'aws-amplify';
+
 const AppContext = React.createContext([]);
+
+const actions = {
+    LOGIN: 'LOGIN',
+};
 
 /**
  * Intial State for AppContext
  */
 const initialState = {
-    user: {
-        isAuthenticated: false,
-    },
+    user: {},
     navigation: [
         {
             path: '/rules',
@@ -25,16 +29,12 @@ const initialState = {
             path: '/user',
             title: 'User Matches',
         },
-        {
-            path: '/admin',
-            title: 'admin Matches',
-        },
     ],
 };
 
 const reducer = (state, action) => {
     switch (action.type) {
-        case 'LOGIN': {
+        case actions.LOGIN: {
             return { ...state, user: action.payload };
         }
         case 'FAILED-LOGIN': {
@@ -66,9 +66,16 @@ const useApp = () => {
 
     const [appState, dispatch] = context;
 
+    const getUserInfo = async () => {
+        console.log('user info')
+        const user = await Auth.currentAuthenticatedUser();
+        dispatch({ type: actions.LOGIN, payload: user || {} })
+    }
+
     return {
         appState,
         dispatch,
+        getUserInfo,
     };
 };
 
