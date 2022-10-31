@@ -4,13 +4,14 @@ import { AppBar, Button, IconButton, Stack, Toolbar, Typography, useTheme, useMe
 import SportsSoccerIcon from '@mui/icons-material/SportsSoccer'
 import { useApp } from '../../contexts/App';
 import SideNavbar from '../SideNavbar';
+import UserAvatar from '../Avatar';
 import './navbar.css'
 
 export default function BasicMenu() {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const { appState } = useApp();
-
+    
     return (
     <AppBar position='static'>
         {isMobile ? (
@@ -29,6 +30,7 @@ export default function BasicMenu() {
                             {nav.title}
                         </Button>
                     ))}
+                    <UserAvatar />
                 </Stack>
             </Toolbar>
         )}

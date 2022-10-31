@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import { useApp } from '../../contexts/App';
 import './sidenavbar.css'
 
-function SideNavbar() {
+const SideNavbar = ({ signOut }) => {
     const [openDrawer, setOpenDrawer] = useState(false);
     const { appState } = useApp();
 
@@ -29,6 +29,11 @@ function SideNavbar() {
                   </ListItemText>
               </ListItem>
           ))}
+          <ListItem key={appState.navigation.length + 1} onClick={() => setOpenDrawer(false)}>
+              <ListItemText>
+                <Button variant="text" onClick={signOut}>Logout</Button>
+              </ListItemText>
+          </ListItem>
       </List>
       </Drawer>
       <IconButton className='menuIcon' onClick={() => setOpenDrawer(!openDrawer)} edge='start' color='inherit' aria-label='menu'>
@@ -37,4 +42,5 @@ function SideNavbar() {
     </>
   );
 }
+
 export default SideNavbar;

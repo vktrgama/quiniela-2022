@@ -41,9 +41,8 @@ const Matches = ({ signOut, user }) => {
       Order: form.get("order"),
       ScoreA: 0,
       ScoreB: 0,
-      Schedule: '',
       Location: form.get("location"),
-      Year: 2022,
+      Schedule: form.get("schedule"),
     };
     await API.graphql({
       query: createMatchesMutation,
@@ -110,6 +109,13 @@ const Matches = ({ signOut, user }) => {
                 name="location"
                 placeholder="Location"
                 label="Stadium, Location"
+                labelHidden
+                variation="quiet"
+            />
+            <TextField
+                name="schedule"
+                placeholder="Date"
+                label="Date"
                 labelHidden
                 variation="quiet"
             />

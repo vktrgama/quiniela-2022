@@ -2,41 +2,48 @@ import React, { useEffect } from "react";
 import { DataGrid, GridActionsCellItem, GridRowModes } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import CircularProgress from '@mui/material/CircularProgress';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import { withAuthenticator } from "@aws-amplify/ui-react";
-import { listMatches } from "../graphql/queries";
+import { listMatchesResults } from "../graphql/queries";
 import { API } from "aws-amplify";
 import {
-  updateMatches as updateMatchesMutation,
+  updateMatchesResults as updateMatchesMutation,
 } from "../graphql/mutations";
+import ConfirmDialog from '../Components/ConfirmDialog'
+import { useApp } from '../contexts/App';
+import { generateScores } from './lib/utils'
 
 const UserMatches = () => {
+    const { appState } = useApp();
     const [rows, setRows] = React.useState([]);
+    const [showSpinner, setSpinner] = React.useState(true)
 
     useEffect(() => {
         fetchMatches();
     }, []);
 
     async function fetchMatches() {
-      const apiData = await API.graphql({ query: listMatches });
-      const matchesFromAPI = apiData.data.listMatches.items;
+      const apiData = await API.graphql({ query: listMatchesResults });
+      const matchesFromAPI = apiData.data.listMatchesResults.items;
 
-      matchesFromAPI.sort((a, b) => a.Order - b.Order);
-      const rows = matchesFromAPI.map(m => {
+      matchesFromAPI.sort((a, b) => a.Match.Order - b.Match.Order);
+      const rows = matchesFromAPI.length ? matchesFromAPI.map(m => {
         return {
           id: m.id,
-          Match: m.Order,
-          TeamA: m.TeamA,
+          Match: m.Match.Order,
+          TeamA: m.Match.TeamA,
           ScoreA: m.ScoreA,
-          TeamB: m.TeamB,
+          TeamB: m.Match.TeamB,
           ScoreB: m.ScoreB,
-          Location: m.Location,
-          Date: m.Schedule
+          Location: m.Match.Location,
+          Date: m.Match.Schedule
         }
-      });
+      }) : [];
       setRows(rows);
+      setSpinner(false);
     }
     
     const [rowModesModel, setRowModesModel] = React.useState({});
@@ -69,22 +76,28 @@ const UserMatches = () => {
         }
     };
 
-    const processRowUpdate = async (newRow) => {
+    const processRowUpdate = async (updRow) => {
         const data = {
-          id: newRow.id,
-          ScoreA: newRow.ScoreA,
-          ScoreB: newRow.ScoreB,
+          id: updRow.id,
+          ScoreA: updRow.ScoreA,
+          ScoreB: updRow.ScoreB,
         };
         await API.graphql({
           query: updateMatchesMutation,
           variables: { input: data },
         });
 
-        const updatedRow = { ...newRow, isNew: false };
-        setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+        const updatedRow = { ...updRow, isNew: false };
+        setRows(rows.map((row) => (row.id === updRow.id ? updatedRow : row)));
         return updatedRow;
     };
     
+    const handleGenerate = async () => {
+        setSpinner(true);
+        await generateScores(appState.user.username);
+        fetchMatches();
+    }
+
     const columns = [
         { field: 'Match', headerName: 'Match', editable: false, flex: 1, maxWidth: 90 },
         { field: 'TeamA', headerName: 'Team', width: 150, editable: false },
@@ -135,21 +148,27 @@ const UserMatches = () => {
 
     return (
       <Container maxWidth="lg">
-        <Box sx={{ height: '80vh', marginTop: '15px' }}>
-          <DataGrid
-            editMode="row"
-            rows={rows}
-            columns={columns}
-            experimentalFeatures={{ newEditingApi: true }}
-            processRowUpdate={processRowUpdate}
-            onProcessRowUpdateError={(error) => console.log(error)}
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={(newModel) => setRowModesModel(newModel)}
-            onRowEditStart={handleRowEditStart}
-            onRowEditStop={handleRowEditStop}
-            hideFooterSelectedRowCount={true}
-          />
-        </Box>
+          <div className="user-header">
+              <div>Generate your quiniela and start entering your scores:</div>
+              {/* <Button variant="outlined" onClick={handleGenerate}>Generate</Button> */}
+              <ConfirmDialog handleAgree={handleGenerate} />
+          </div>
+          <Box sx={{ height: '75vh', marginTop: '15px' }}>
+              <DataGrid
+                editMode="row"
+                rows={rows}
+                columns={columns}
+                experimentalFeatures={{ newEditingApi: true }}
+                processRowUpdate={processRowUpdate}
+                onProcessRowUpdateError={(error) => console.log(error)}
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={(newModel) => setRowModesModel(newModel)}
+                onRowEditStart={handleRowEditStart}
+                onRowEditStop={handleRowEditStop}
+                hideFooterSelectedRowCount={true}
+              />
+          </Box>
+          { showSpinner && <CircularProgress id='spinner' /> }
       </Container>
   );
 }

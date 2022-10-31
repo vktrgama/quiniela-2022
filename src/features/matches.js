@@ -2,12 +2,14 @@ import React, { useEffect } from "react";
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import CircularProgress from '@mui/material/CircularProgress';
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import { listMatches } from "../graphql/queries";
 import { API } from "aws-amplify";
 
 const ListMatches = () => {
     const [rows, setRows] = React.useState([]);
+    const [showSpinner, setSpinner] = React.useState(true)
 
     useEffect(() => {
         fetchMatches();
@@ -31,6 +33,7 @@ const ListMatches = () => {
         }
       });
       setRows(rows);
+      setSpinner(false);
     }
     
     const columns = [
@@ -54,6 +57,7 @@ const ListMatches = () => {
             hideFooterSelectedRowCount={true}
           />
         </Box>
+        { showSpinner && <CircularProgress id='spinner' /> }
       </Container>
   );
 }
