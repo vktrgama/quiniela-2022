@@ -47,15 +47,27 @@ export const getMatchesResults = /* GraphQL */ `
     getMatchesResults(id: $id) {
       id
       UserName
-      MatchId
-      TeamA
+      Match {
+        id
+        TeamA
+        ScoreA
+        TeamB
+        ScoreB
+        Order
+        Schedule
+        Location
+        Year
+        createdAt
+        updatedAt
+      }
       ScoreA
-      TeamB
       ScoreB
+      Active
       Year
       Group
       createdAt
       updatedAt
+      matchesResultsMatchId
     }
   }
 `;
@@ -69,15 +81,27 @@ export const listMatchesResults = /* GraphQL */ `
       items {
         id
         UserName
-        MatchId
-        TeamA
+        Match {
+          id
+          TeamA
+          ScoreA
+          TeamB
+          ScoreB
+          Order
+          Schedule
+          Location
+          Year
+          createdAt
+          updatedAt
+        }
         ScoreA
-        TeamB
         ScoreB
+        Active
         Year
         Group
         createdAt
         updatedAt
+        matchesResultsMatchId
       }
       nextToken
     }

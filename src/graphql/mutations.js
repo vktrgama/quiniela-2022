@@ -69,15 +69,27 @@ export const createMatchesResults = /* GraphQL */ `
     createMatchesResults(input: $input, condition: $condition) {
       id
       UserName
-      MatchId
-      TeamA
+      Match {
+        id
+        TeamA
+        ScoreA
+        TeamB
+        ScoreB
+        Order
+        Schedule
+        Location
+        Year
+        createdAt
+        updatedAt
+      }
       ScoreA
-      TeamB
       ScoreB
+      Active
       Year
       Group
       createdAt
       updatedAt
+      matchesResultsMatchId
     }
   }
 `;
@@ -89,15 +101,27 @@ export const updateMatchesResults = /* GraphQL */ `
     updateMatchesResults(input: $input, condition: $condition) {
       id
       UserName
-      MatchId
-      TeamA
+      Match {
+        id
+        TeamA
+        ScoreA
+        TeamB
+        ScoreB
+        Order
+        Schedule
+        Location
+        Year
+        createdAt
+        updatedAt
+      }
       ScoreA
-      TeamB
       ScoreB
+      Active
       Year
       Group
       createdAt
       updatedAt
+      matchesResultsMatchId
     }
   }
 `;
@@ -109,15 +133,27 @@ export const deleteMatchesResults = /* GraphQL */ `
     deleteMatchesResults(input: $input, condition: $condition) {
       id
       UserName
-      MatchId
-      TeamA
+      Match {
+        id
+        TeamA
+        ScoreA
+        TeamB
+        ScoreB
+        Order
+        Schedule
+        Location
+        Year
+        createdAt
+        updatedAt
+      }
       ScoreA
-      TeamB
       ScoreB
+      Active
       Year
       Group
       createdAt
       updatedAt
+      matchesResultsMatchId
     }
   }
 `;

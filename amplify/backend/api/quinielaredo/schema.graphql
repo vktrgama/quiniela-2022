@@ -11,18 +11,17 @@ type Matches @model {
   Order: Int
   Schedule: String
   Location: String
-  Year: Int
+  Year: Int @default(value: "2022")
 }
 
 type MatchesResults @model {
   id: ID!
   UserName: String
-  MatchId: String
-  TeamA: String
+  Match: Matches @hasOne
   ScoreA: Int
-  TeamB: String
   ScoreB: Int
-  Year: Int
+  Active: Boolean
+  Year: Int @default(value: "2022")
   Group: String
 }
 
@@ -31,6 +30,6 @@ type UserPoints @model {
   UserName: String
   Total: Int
   Active: Boolean
-  Year: Int
+  Year: Int @default(value: "2022")
   Group: String
 }

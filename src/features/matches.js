@@ -6,7 +6,7 @@ import { withAuthenticator } from "@aws-amplify/ui-react";
 import { listMatches } from "../graphql/queries";
 import { API } from "aws-amplify";
 
-const EditMatches = () => {
+const ListMatches = () => {
     const [rows, setRows] = React.useState([]);
 
     useEffect(() => {
@@ -58,4 +58,4 @@ const EditMatches = () => {
   );
 }
 
-export default withAuthenticator(EditMatches);
+export default withAuthenticator(ListMatches);
