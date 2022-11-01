@@ -3,7 +3,6 @@ import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import CircularProgress from '@mui/material/CircularProgress';
-import { withAuthenticator } from "@aws-amplify/ui-react";
 import { listUserPoints } from "../graphql/queries";
 import { API } from "aws-amplify";
 
@@ -52,4 +51,4 @@ const Participants = () => {
   );
 }
 
-export default withAuthenticator(Participants);
+export default Participants;
