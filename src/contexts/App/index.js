@@ -1,13 +1,23 @@
 import * as React from 'react';
+import { Auth } from 'aws-amplify';
+import { listUserPoints, listMatchesResults } from "../../graphql/queries";
+import { API } from "aws-amplify";
+
 const AppContext = React.createContext([]);
+
+const actions = {
+    LOGIN: 'LOGIN',
+    LOGOUT: 'LOGOUT',
+    LOAD_USERS: 'LOAD_USERS',
+    LOAD_USER_MATCHES: 'LOAD_USER_MATCHES',
+};
 
 /**
  * Intial State for AppContext
  */
 const initialState = {
-    user: {
-        isAuthenticated: false,
-    },
+    user: {},
+    users: [],
     navigation: [
         {
             path: '/rules',
@@ -30,17 +40,17 @@ const initialState = {
 
 const reducer = (state, action) => {
     switch (action.type) {
-        case 'LOGIN': {
+        case actions.LOGIN: {
             return { ...state, user: action.payload };
         }
-        case 'FAILED-LOGIN': {
-            return { ...state, user: { status: action.payload.details } };
-        }
-        case 'NOT-AUTH-LOGIN': {
+        case actions.LOGOUT: {
             return { ...state, user: action.payload };
         }
-        case 'LOGOUT': {
-            return { ...state, user: action.payload };
+        case actions.LOAD_USERS: {
+            return { ...state, users: action.payload };
+        }
+        case actions.LOAD_USER_MATCHES: {
+            return { ...state, userMatches: action.payload };
         }
         default: {
             throw new Error(`Unsupported action type: ${action.type}`);
@@ -62,9 +72,66 @@ const useApp = () => {
 
     const [appState, dispatch] = context;
 
+    const getUserInfo = async () => {
+        try {
+            const user = await Auth.currentAuthenticatedUser();
+            dispatch({ type: actions.LOGIN, payload: user })
+        } catch(e) {
+            console.log(e);
+        }
+    }
+
+    const Logout = () => {
+        dispatch({ type: actions.LOGOUT, payload: {} })
+    }
+
+    const fetchParticipants = async () => {
+        const apiData = await API.graphql({ query: listUserPoints });
+        const userList = apiData.data.listUserPoints.items;
+        const activeUsers = userList.filter(m => m.Active);
+
+        activeUsers.sort((a, b) => a.Order - b.Order);
+        const users = activeUsers.map(u => {
+            return {
+                id: u.id,
+                name: u.UserName,
+                totalPoints: u.Total,
+            }
+        });
+
+        dispatch({ type: actions.LOAD_USERS, payload: users })
+    }
+
+    const fetchUserMatches = async () => {
+        const apiData = await API.graphql({ query: listMatchesResults });
+  
+        const userMatches = apiData.data.listMatchesResults.items;
+        const matches = userMatches.filter(m => m.UserName === appState.user.username);
+        matches.sort((a, b) => a.Match.Order - b.Match.Order);
+    
+        const rows = matches.length ? matches.map(m => {
+          return {
+            id: m.id,
+            Match: m.Match.Order,
+            TeamA: m.Match.TeamA,
+            ScoreA: m.ScoreA,
+            TeamB: m.Match.TeamB,
+            ScoreB: m.ScoreB,
+            Location: m.Match.Location,
+            Date: m.Match.Schedule
+          }
+        }) : [];
+        
+        dispatch({ type: actions.LOAD_USER_MATCHES, payload: rows })
+      }
+
     return {
         appState,
         dispatch,
+        getUserInfo,
+        Logout,
+        fetchParticipants,
+        fetchUserMatches
     };
 };
 

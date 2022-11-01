@@ -10,11 +10,17 @@ import {
 import MenuIcon from '@mui/icons-material/Menu'
 import { Link } from "react-router-dom";
 import { useApp } from '../../contexts/App';
+import { Auth } from 'aws-amplify';
 import './sidenavbar.css'
 
-function SideNavbar() {
-    const [openDrawer, setOpenDrawer] = useState(false);
-    const { appState } = useApp();
+const SideNavbar = ({ signOut }) => {
+  const { appState, Logout } = useApp();
+  const [openDrawer, setOpenDrawer] = useState(false);
+
+  const handleSignOut = () => {
+    Logout();
+    Auth.signOut();
+  }
 
   return (
     <>
@@ -29,6 +35,13 @@ function SideNavbar() {
                   </ListItemText>
               </ListItem>
           ))}
+          { Object.keys(appState.user).length ?
+            <ListItem key={appState.navigation.length + 1} onClick={() => setOpenDrawer(false)}>
+              <ListItemText>
+                <Button variant="text" onClick={handleSignOut}>Logout</Button>
+              </ListItemText>
+            </ListItem> : ''
+          }
       </List>
       </Drawer>
       <IconButton className='menuIcon' onClick={() => setOpenDrawer(!openDrawer)} edge='start' color='inherit' aria-label='menu'>
@@ -37,4 +50,5 @@ function SideNavbar() {
     </>
   );
 }
+
 export default SideNavbar;

@@ -4,12 +4,19 @@ import { AppBar, Button, IconButton, Stack, Toolbar, Typography, useTheme, useMe
 import SportsSoccerIcon from '@mui/icons-material/SportsSoccer'
 import { useApp } from '../../contexts/App';
 import SideNavbar from '../SideNavbar';
+import UserAvatar from '../Avatar';
+import { Auth } from 'aws-amplify';
 import './navbar.css'
 
-export default function BasicMenu() {
+const NavBar = () => {
+    const { appState, Logout } = useApp();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-    const { appState } = useApp();
+    
+    const handleSignOut = () => {
+        Logout();
+        Auth.signOut();
+    }
 
     return (
     <AppBar position='static'>
@@ -29,9 +36,12 @@ export default function BasicMenu() {
                             {nav.title}
                         </Button>
                     ))}
+                    <UserAvatar handleSignOut={handleSignOut} user={appState.user}  />
                 </Stack>
             </Toolbar>
         )}
     </AppBar>
     )
 }
+
+export default NavBar;
