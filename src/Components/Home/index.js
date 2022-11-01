@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import { listUserPoints } from "../../graphql/queries";
-import { API } from "aws-amplify";
 import {
     Stack, Divider,
     List,
@@ -11,29 +9,19 @@ import {
     Typography,
   } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useApp } from '../../contexts/App'
 import './home.css';
 
 const Home = () => {
-    const [rows, setRows] = React.useState([]);
+    const { appState, fetchParticipants } = useApp();
+    const { users } = appState;
 
     useEffect(() => {
-        fetchParticpants();
-    }, []);
-
-    async function fetchParticpants() {
-      const apiData = await API.graphql({ query: listUserPoints });
-      const userList = apiData.data.listUserPoints.items;
-
-      userList.sort((a, b) => a.Order - b.Order);
-      const rows = userList.map(u => {
-        return {
-          id: u.id,
-          name: u.UserName,
-          totalPoints: u.Total,
+        if (users && users.length === 0) {
+            fetchParticipants();
         }
-      });
-      setRows(rows);
-    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return <div className='home'>
         <div className="hero">
@@ -49,7 +37,7 @@ const Home = () => {
                     >
                     <span>List of participants:</span>
                     <List dense sx={{ width: '300px', maxWidth: 360 }}>
-                        {rows.map((p, idx) => (
+                        {users.map((p, idx) => (
                             <ListItem key={idx}>
                                 <ListItemAvatar>
                                 <Avatar>

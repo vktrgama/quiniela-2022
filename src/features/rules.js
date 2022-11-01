@@ -3,7 +3,7 @@ import Container from '@mui/material/Container';
 const rules = () => {
     return (
         <Container maxWidth="lg">
-            <div class="entry-content">
+            <div className="entry-content">
                 <h3>GENERAL RULES</h3>
                 <ul>
                     <li>Quinielas can be created up to two (2) hours before the start of the tournament (scheduled kick off time of the first match).</li>

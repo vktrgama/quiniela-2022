@@ -38,16 +38,16 @@ const ListMatches = () => {
     
     const columns = [
       { field: 'Match', headerName: 'Match', editable: false, flex: 1, maxWidth: 90 },
-      { field: 'TeamA', headerName: 'Team', flex: 0.5, width: 150, editable: false },
+      { field: 'TeamA', headerName: 'Team', flex: 0.5, width: 100, editable: false },
       { field: 'ScoreA', headerName: 'Score', flex: 0.5, type: 'number', editable: false },
-      { field: 'TeamB', headerName: 'Team',flex: 0.5,  width: 150, editable: false },
+      { field: 'TeamB', headerName: 'Team',flex: 0.5,  width: 100, editable: false },
       { field: 'ScoreB', headerName: 'Score', flex: 0.5, type: 'number', editable: false },
-      { field: 'Location', headerName: 'Location', flex: 0.5, width: 200, editable: false },
+      { field: 'Location', headerName: 'Location', flex: 1, width: 200, editable: false },
       { field: 'Date', headerName: 'Date', flex: 0.5, width: 150, editable: false },
       ];
 
     return (
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Box sx={{ height: '80vh', marginTop: '15px' }}>
           <DataGrid
             rows={rows}

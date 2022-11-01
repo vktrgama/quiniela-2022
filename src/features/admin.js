@@ -28,8 +28,9 @@ const Matches = ({ signOut, user }) => {
 
   async function fetchMatches() {
     const apiData = await API.graphql({ query: listMatches });
-    const matchesFromAPI = apiData.data.listMatches.items;
-    setMatches(matchesFromAPI);
+    const matches = apiData.data.listMatches.items;
+    matches.sort((a, b) => a.Order - b.Order);
+    setMatches(matches);
   }
 
   async function createMatch(event) {
@@ -82,17 +83,24 @@ const Matches = ({ signOut, user }) => {
         <View as="form" margin="3rem 0" onSubmit={createMatch}>
             <Flex direction="row" justifyContent="center">
             <TextField
-                name="order"
-                placeholder="Match Number"
-                label="Match Number"
+                name="schedule"
+                placeholder="Date"
+                label="Date"
                 labelHidden
                 variation="quiet"
-                required
             />
             <TextField
                 name="teamA"
                 placeholder="Match Team A"
                 label="Match Home Team"
+                labelHidden
+                variation="quiet"
+                required
+            />
+            <TextField
+                name="order"
+                placeholder="Match Number"
+                label="Match Number"
                 labelHidden
                 variation="quiet"
                 required
@@ -112,13 +120,7 @@ const Matches = ({ signOut, user }) => {
                 labelHidden
                 variation="quiet"
             />
-            <TextField
-                name="schedule"
-                placeholder="Date"
-                label="Date"
-                labelHidden
-                variation="quiet"
-            />
+            
             <Button type="submit" variation="primary">
                 Create Match
             </Button>

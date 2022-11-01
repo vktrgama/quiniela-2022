@@ -22,28 +22,32 @@ const UserMatches = () => {
     const [showSpinner, setSpinner] = React.useState(true)
 
     useEffect(() => {
-        fetchMatches();
+        if (Object.keys(appState.user).length) {
+            fetchMatches();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    async function fetchMatches() {
-      const apiData = await API.graphql({ query: listMatchesResults });
-      const matchesFromAPI = apiData.data.listMatchesResults.items;
-
-      matchesFromAPI.sort((a, b) => a.Match.Order - b.Match.Order);
-      const rows = matchesFromAPI.length ? matchesFromAPI.map(m => {
-        return {
-          id: m.id,
-          Match: m.Match.Order,
-          TeamA: m.Match.TeamA,
-          ScoreA: m.ScoreA,
-          TeamB: m.Match.TeamB,
-          ScoreB: m.ScoreB,
-          Location: m.Match.Location,
-          Date: m.Match.Schedule
-        }
-      }) : [];
-      setRows(rows);
-      setSpinner(false);
+    const fetchMatches = async () => {
+        const apiData = await API.graphql({ query: listMatchesResults });
+        const userMatches = apiData.data.listMatchesResults.items;
+        const matches = userMatches.filter(m => m.UserName === appState.user.username);
+        matches.sort((a, b) => a.Match.Order - b.Match.Order);
+        
+        const rows = matches.length ? matches.map(m => {
+          return {
+            id: m.id,
+            Match: m.Match.Order,
+            TeamA: m.Match.TeamA,
+            ScoreA: m.ScoreA,
+            TeamB: m.Match.TeamB,
+            ScoreB: m.ScoreB,
+            Location: m.Match.Location,
+            Date: m.Match.Schedule
+          }
+        }) : [];
+        setRows(rows);
+        setSpinner(false);
     }
     
     const [rowModesModel, setRowModesModel] = React.useState({});
