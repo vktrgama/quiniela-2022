@@ -10,11 +10,17 @@ import {
 import MenuIcon from '@mui/icons-material/Menu'
 import { Link } from "react-router-dom";
 import { useApp } from '../../contexts/App';
+import { Auth } from 'aws-amplify';
 import './sidenavbar.css'
 
 const SideNavbar = ({ signOut }) => {
-    const [openDrawer, setOpenDrawer] = useState(false);
-    const { appState } = useApp();
+  const { appState, Logout } = useApp();
+  const [openDrawer, setOpenDrawer] = useState(false);
+
+  const handleSignOut = () => {
+    Logout();
+    Auth.signOut();
+  }
 
   return (
     <>
@@ -29,11 +35,13 @@ const SideNavbar = ({ signOut }) => {
                   </ListItemText>
               </ListItem>
           ))}
-          <ListItem key={appState.navigation.length + 1} onClick={() => setOpenDrawer(false)}>
+          { Object.keys(appState.user).length ?
+            <ListItem key={appState.navigation.length + 1} onClick={() => setOpenDrawer(false)}>
               <ListItemText>
-                <Button variant="text" onClick={signOut}>Logout</Button>
+                <Button variant="text" onClick={handleSignOut}>Logout</Button>
               </ListItemText>
-          </ListItem>
+            </ListItem> : ''
+          }
       </List>
       </Drawer>
       <IconButton className='menuIcon' onClick={() => setOpenDrawer(!openDrawer)} edge='start' color='inherit' aria-label='menu'>

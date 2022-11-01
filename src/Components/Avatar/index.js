@@ -5,15 +5,18 @@ import Badge from '@mui/material/Badge';
 import { Button } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Avatar from '@mui/material/Avatar';
-import { useApp } from '../../contexts/App';
 
-const UserAvatar = ({ signOut }) => {
-    const { appState } = useApp();
+const UserAvatar = ({ handleSignOut, user }) => {
     const [open, setOpen] = React.useState(false);
 
     const handleToolTipOpen = () => {
         setOpen(!open);
     };
+
+    const handleLogout = () => {
+        handleSignOut();
+        setOpen(!open);
+    }
 
     const StyledBadge = styled(Badge)(({ theme }) => ({
         '& .MuiBadge-badge': {
@@ -35,11 +38,13 @@ const UserAvatar = ({ signOut }) => {
         textTransform: 'none',
     });
 
-    return (
+    return Object.keys(user).length ? (
         <HtmlTooltip
             title={
             <React.Fragment>
-                <LogOutButton variant="contained" onClick={handleToolTipOpen} endIcon={<LogoutIcon />}>Logout {appState.user.username}</LogOutButton>
+                <LogOutButton variant="contained" onClick={handleLogout} endIcon={<LogoutIcon />}>
+                    Logout {user ? user.username : ''}
+                </LogOutButton>
             </React.Fragment>
             }
         >
@@ -49,10 +54,10 @@ const UserAvatar = ({ signOut }) => {
                 variant="dot"
                 onClick={handleToolTipOpen}
             >
-                <Avatar alt={appState.user.username} src="avatar.jpeg" />
+                <Avatar alt={user ? user.username : ''} src="avatar.jpeg" />
             </StyledBadge>
         </HtmlTooltip>
-    )
+    ) : <Avatar alt="" src="avatar.jpeg" />
 }
 
 export default UserAvatar;

@@ -22,7 +22,7 @@ function Footer() {
             <Stack direction='row' spacing={2} justifyContent='left' alignItems='left' divider={<Divider orientation='vertical' flexItem />}>
                 <span>COPYRIGHT 2022</span>
                 <Button variant="text" onClick={handleClick({msg: 'call me'})}>Contact</Button>
-                <Button variant="text" onClick={handleClick({msg: 'you have no privacy'})}>Privacy</Button>
+                <Button variant="text" onClick={handleClick({msg: 'trust me'})}>Privacy</Button>
             </Stack>
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top',
           horizontal: 'right' }}>

@@ -1,13 +1,20 @@
 
 .hero {
+    position: absolute;
     background: url('../../assets/images/khalifa_stadium10.jpg') no-repeat center center fixed;
     background-size: cover;
-    height: 500px;
+    top:64px;
+    bottom:35px;
+    width:100%;;
     color: white;
 }
 
 .hero div {
     padding: 20px;
+}
+
+.hero h1 {
+    font-size: 40px;
 }
 
 .container-left {

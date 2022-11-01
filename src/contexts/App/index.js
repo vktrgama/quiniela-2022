@@ -5,6 +5,7 @@ const AppContext = React.createContext([]);
 
 const actions = {
     LOGIN: 'LOGIN',
+    LOGOUT: 'LOGOUT',
 };
 
 /**
@@ -37,13 +38,7 @@ const reducer = (state, action) => {
         case actions.LOGIN: {
             return { ...state, user: action.payload };
         }
-        case 'FAILED-LOGIN': {
-            return { ...state, user: { status: action.payload.details } };
-        }
-        case 'NOT-AUTH-LOGIN': {
-            return { ...state, user: action.payload };
-        }
-        case 'LOGOUT': {
+        case actions.LOGOUT: {
             return { ...state, user: action.payload };
         }
         default: {
@@ -67,15 +62,23 @@ const useApp = () => {
     const [appState, dispatch] = context;
 
     const getUserInfo = async () => {
-        console.log('user info')
-        const user = await Auth.currentAuthenticatedUser();
-        dispatch({ type: actions.LOGIN, payload: user || {} })
+        try {
+            const user = await Auth.currentAuthenticatedUser();
+            dispatch({ type: actions.LOGIN, payload: user || {} })
+        } catch(e) {
+            console.log(e);
+        }
+    }
+
+    const Logout = () => {
+        dispatch({ type: actions.LOGOUT, payload: {} })
     }
 
     return {
         appState,
         dispatch,
         getUserInfo,
+        Logout,
     };
 };
 
