@@ -3,33 +3,18 @@ import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import CircularProgress from '@mui/material/CircularProgress';
-import { listUserPoints } from "../graphql/queries";
-import { API } from "aws-amplify";
+import { useApp } from '../contexts/App'
 
 const Participants = () => {
-    const [rows, setRows] = React.useState([]);
+    const { fetchParticipants, appState } = useApp();
     const [showSpinner, setSpinner] = React.useState(true)
 
     useEffect(() => {
-        fetchParticpants();
+        fetchParticipants();
+        setSpinner(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    async function fetchParticpants() {
-      const apiData = await API.graphql({ query: listUserPoints });
-      const userList = apiData.data.listUserPoints.items;
-
-      userList.sort((a, b) => a.Order - b.Order);
-      const rows = userList.map(u => {
-        return {
-          id: u.id,
-          name: u.UserName,
-          totalPoints: u.Total,
-        }
-      });
-      setRows(rows);
-      setSpinner(false);
-    }
-    
     const columns = [
       { field: 'name', headerName: 'Participant', editable: false, flex: 1, maxWidth: 200 },
       { field: 'totalPoints', headerName: 'Total Points', flex: 0.5, width: 150, editable: false },
@@ -39,7 +24,7 @@ const Participants = () => {
       <Container maxWidth="sm">
         <Box sx={{ height: '80vh', marginTop: '15px' }}>
           <DataGrid
-            rows={rows}
+            rows={appState.users}
             columns={columns}
             experimentalFeatures={{ newEditingApi: true }}
             onProcessRowUpdateError={(error) => console.log(error)}

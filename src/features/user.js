@@ -6,6 +6,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
+import Alert from '@mui/material/Alert';
+import Collapse from '@mui/material/Collapse';
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import { listMatchesResults } from "../graphql/queries";
 import { API } from "aws-amplify";
@@ -20,21 +23,26 @@ const UserMatches = () => {
     const { appState } = useApp();
     const [rows, setRows] = React.useState([]);
     const [showSpinner, setSpinner] = React.useState(true)
+    const [openAlert, setOpenAlert] = React.useState(false);
 
     useEffect(() => {
         if (Object.keys(appState.user).length) {
-            fetchMatches();
+            fetchUserMatches();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const fetchMatches = async () => {
-        const apiData = await API.graphql({ query: listMatchesResults });
+    const fetchUserMatches = async () => {
+        const filter = { and: [
+          { Group: { eq: process.env.REACT_APP_GROUP } },
+          { UserName: { eq: appState.user.username } }
+        ]};
+
+        const apiData = await API.graphql({ query: listMatchesResults, variables: { filter } });
         const userMatches = apiData.data.listMatchesResults.items;
-        const matches = userMatches.filter(m => m.UserName === appState.user.username);
-        matches.sort((a, b) => a.Match.Order - b.Match.Order);
+        userMatches.sort((a, b) => a.Match.Order - b.Match.Order);
         
-        const rows = matches.length ? matches.map(m => {
+        const rows = userMatches.length ? userMatches.map(m => {
           return {
             id: m.id,
             Match: m.Match.Order,
@@ -43,7 +51,8 @@ const UserMatches = () => {
             TeamB: m.Match.TeamB,
             ScoreB: m.ScoreB,
             Location: m.Match.Location,
-            Date: m.Match.Schedule
+            Date: m.Match.Schedule,
+            Active: m.Active
           }
         }) : [];
         setRows(rows);
@@ -81,6 +90,11 @@ const UserMatches = () => {
     };
 
     const processRowUpdate = async (updRow) => {
+        if (!updRow.Active) {
+            setOpenAlert(true);
+            return;
+        }
+
         const data = {
           id: updRow.id,
           ScoreA: updRow.ScoreA,
@@ -99,7 +113,7 @@ const UserMatches = () => {
     const handleGenerate = async () => {
         setSpinner(true);
         await generateScores(appState.user.username);
-        fetchMatches();
+        fetchUserMatches();
     }
 
     const columns = [
@@ -152,11 +166,26 @@ const UserMatches = () => {
 
     return (
       <Container maxWidth="lg">
+        
           <div className="user-header">
               <div>Generate your quiniela and start entering your scores:</div>
               {/* <Button variant="outlined" onClick={handleGenerate}>Generate</Button> */}
               <ConfirmDialog handleAgree={handleGenerate} />
           </div>
+          <Collapse in={openAlert}>
+            <Alert action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setOpenAlert(false);
+              }}
+            >
+              <CancelIcon fontSize="inherit" />
+            </IconButton>
+            }severity="error">You are not allowd to change scores anymore.</Alert>
+          </Collapse>
           <Box sx={{ height: '75vh', marginTop: '15px' }}>
               <DataGrid
                 editMode="row"

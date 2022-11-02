@@ -1,0 +1,16 @@
+
+.no-auth-hero {
+    position: absolute;
+    background: url('../../assets/09_ZHA_Al_Wakrah_Stadium_Qatar.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    top:64px;
+    bottom:35px;
+    width:100%;;
+    color: black;
+}
+
+.no-auth-hero h1 {
+    font-size: 40px;
+    position: absolute;
+    top: 30%;
+}

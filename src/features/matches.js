@@ -15,10 +15,13 @@ const ListMatches = () => {
     }, []);
 
     async function fetchMatches() {
-      const apiData = await API.graphql({ query: listMatches });
+      const filter = { and: [
+        { Year: { eq: 2022 } },
+      ]};
+      const apiData = await API.graphql({ query: listMatches, variables: { filter } });
       const matchesFromAPI = apiData.data.listMatches.items;
-
       matchesFromAPI.sort((a, b) => a.Order - b.Order);
+
       const rows = matchesFromAPI.map(m => {
         return {
           id: m.id,

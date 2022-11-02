@@ -86,11 +86,16 @@ const useApp = () => {
     }
 
     const fetchParticipants = async () => {
-        const apiData = await API.graphql({ query: listUserPoints });
+        const filter = { and: [
+            { Active: { eq: true } }, 
+            { Group: { eq: process.env.REACT_APP_GROUP } },
+            { Year: { eq: 2022 } }
+        ] };
+
+        const apiData = await API.graphql({ query: listUserPoints, variables: { filter } });
         const userList = apiData.data.listUserPoints.items;
         const activeUsers = userList.filter(m => m.Active);
 
-        activeUsers.sort((a, b) => a.Order - b.Order);
         const users = activeUsers.map(u => {
             return {
                 id: u.id,

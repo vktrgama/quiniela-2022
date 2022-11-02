@@ -25,7 +25,8 @@ export const generateScores = async (userName) => {
             ScoreA: 0,
             ScoreB: 0,
             UserName: userName,
-            Group: 'plutotv',
+            Active: true,
+            Group: process.env.REACT_APP_GROUP,
         };
         await API.graphql({
             query: createResult,
@@ -46,7 +47,7 @@ export const generateScores = async (userName) => {
         UserName: userName,
         Total: 0,
         Active: true,
-        Group: 'plutotv',
+        Group: process.env.REACT_APP_GROUP,
     };
     await API.graphql({
         query: createUserPoints,
