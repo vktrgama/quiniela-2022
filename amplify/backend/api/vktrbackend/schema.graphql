@@ -3,26 +3,27 @@
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
 type Matches @model {
-  id: ID! @primaryKey(sortKeyFields: ["Order"])
+  id: ID!
   TeamA: String
-  ScoreA: String
+  ScoreA: Int
   TeamB: String
-  ScoreB: String
-  Order: Int!
+  ScoreB: Int
+  Order: Int
   Schedule: String
   Location: String
-  Year: Int
+  Active: Boolean
+  Year: Int @default(value: "2022")
 }
 
 type MatchesResults @model {
   id: ID!
   UserName: String
-  MatchId: String
-  TeamA: String
-  ScoreA: String
-  TeamB: String
-  ScoreB: String
-  Year: Int
+  Match: Matches @hasOne
+  ScoreA: Int
+  ScoreB: Int
+  Active: Boolean
+  Year: Int @default(value: "2022")
+  Group: String
 }
 
 type UserPoints @model {
@@ -30,5 +31,6 @@ type UserPoints @model {
   UserName: String
   Total: Int
   Active: Boolean
-  Year: Int
+  Year: Int @default(value: "2022")
+  Group: String
 }

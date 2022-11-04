@@ -12,6 +12,7 @@ export const onCreateMatches = /* GraphQL */ `
       Order
       Schedule
       Location
+      Active
       Year
       createdAt
       updatedAt
@@ -29,6 +30,7 @@ export const onUpdateMatches = /* GraphQL */ `
       Order
       Schedule
       Location
+      Active
       Year
       createdAt
       updatedAt
@@ -46,6 +48,7 @@ export const onDeleteMatches = /* GraphQL */ `
       Order
       Schedule
       Location
+      Active
       Year
       createdAt
       updatedAt
@@ -59,14 +62,28 @@ export const onCreateMatchesResults = /* GraphQL */ `
     onCreateMatchesResults(filter: $filter) {
       id
       UserName
-      MatchId
-      TeamA
+      Match {
+        id
+        TeamA
+        ScoreA
+        TeamB
+        ScoreB
+        Order
+        Schedule
+        Location
+        Active
+        Year
+        createdAt
+        updatedAt
+      }
       ScoreA
-      TeamB
       ScoreB
+      Active
       Year
+      Group
       createdAt
       updatedAt
+      matchesResultsMatchId
     }
   }
 `;
@@ -77,14 +94,28 @@ export const onUpdateMatchesResults = /* GraphQL */ `
     onUpdateMatchesResults(filter: $filter) {
       id
       UserName
-      MatchId
-      TeamA
+      Match {
+        id
+        TeamA
+        ScoreA
+        TeamB
+        ScoreB
+        Order
+        Schedule
+        Location
+        Active
+        Year
+        createdAt
+        updatedAt
+      }
       ScoreA
-      TeamB
       ScoreB
+      Active
       Year
+      Group
       createdAt
       updatedAt
+      matchesResultsMatchId
     }
   }
 `;
@@ -95,14 +126,28 @@ export const onDeleteMatchesResults = /* GraphQL */ `
     onDeleteMatchesResults(filter: $filter) {
       id
       UserName
-      MatchId
-      TeamA
+      Match {
+        id
+        TeamA
+        ScoreA
+        TeamB
+        ScoreB
+        Order
+        Schedule
+        Location
+        Active
+        Year
+        createdAt
+        updatedAt
+      }
       ScoreA
-      TeamB
       ScoreB
+      Active
       Year
+      Group
       createdAt
       updatedAt
+      matchesResultsMatchId
     }
   }
 `;
@@ -116,6 +161,7 @@ export const onCreateUserPoints = /* GraphQL */ `
       Total
       Active
       Year
+      Group
       createdAt
       updatedAt
     }
@@ -131,6 +177,7 @@ export const onUpdateUserPoints = /* GraphQL */ `
       Total
       Active
       Year
+      Group
       createdAt
       updatedAt
     }
@@ -146,6 +193,7 @@ export const onDeleteUserPoints = /* GraphQL */ `
       Total
       Active
       Year
+      Group
       createdAt
       updatedAt
     }

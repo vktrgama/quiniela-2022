@@ -2,8 +2,8 @@
 // this is an auto generated file. This will be overwritten
 
 export const getMatches = /* GraphQL */ `
-  query GetMatches($id: ID!, $Order: Int!) {
-    getMatches(id: $id, Order: $Order) {
+  query GetMatches($id: ID!) {
+    getMatches(id: $id) {
       id
       TeamA
       ScoreA
@@ -12,6 +12,7 @@ export const getMatches = /* GraphQL */ `
       Order
       Schedule
       Location
+      Active
       Year
       createdAt
       updatedAt
@@ -20,21 +21,11 @@ export const getMatches = /* GraphQL */ `
 `;
 export const listMatches = /* GraphQL */ `
   query ListMatches(
-    $id: ID
-    $Order: ModelIntKeyConditionInput
     $filter: ModelMatchesFilterInput
     $limit: Int
     $nextToken: String
-    $sortDirection: ModelSortDirection
   ) {
-    listMatches(
-      id: $id
-      Order: $Order
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      sortDirection: $sortDirection
-    ) {
+    listMatches(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
         TeamA
@@ -44,6 +35,7 @@ export const listMatches = /* GraphQL */ `
         Order
         Schedule
         Location
+        Active
         Year
         createdAt
         updatedAt
@@ -57,14 +49,28 @@ export const getMatchesResults = /* GraphQL */ `
     getMatchesResults(id: $id) {
       id
       UserName
-      MatchId
-      TeamA
+      Match {
+        id
+        TeamA
+        ScoreA
+        TeamB
+        ScoreB
+        Order
+        Schedule
+        Location
+        Active
+        Year
+        createdAt
+        updatedAt
+      }
       ScoreA
-      TeamB
       ScoreB
+      Active
       Year
+      Group
       createdAt
       updatedAt
+      matchesResultsMatchId
     }
   }
 `;
@@ -78,14 +84,28 @@ export const listMatchesResults = /* GraphQL */ `
       items {
         id
         UserName
-        MatchId
-        TeamA
+        Match {
+          id
+          TeamA
+          ScoreA
+          TeamB
+          ScoreB
+          Order
+          Schedule
+          Location
+          Active
+          Year
+          createdAt
+          updatedAt
+        }
         ScoreA
-        TeamB
         ScoreB
+        Active
         Year
+        Group
         createdAt
         updatedAt
+        matchesResultsMatchId
       }
       nextToken
     }
@@ -99,6 +119,7 @@ export const getUserPoints = /* GraphQL */ `
       Total
       Active
       Year
+      Group
       createdAt
       updatedAt
     }
@@ -117,6 +138,7 @@ export const listUserPoints = /* GraphQL */ `
         Total
         Active
         Year
+        Group
         createdAt
         updatedAt
       }

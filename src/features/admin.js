@@ -14,6 +14,7 @@ import { listMatches } from "../graphql/queries";
 import {
   createMatches as createMatchesMutation,
   deleteMatches as deleteMatcheseMutation,
+  updateMatches
 } from "../graphql/mutations";
 import { Input } from "@mui/material";
 
@@ -51,6 +52,19 @@ const Matches = ({ signOut, user }) => {
     event.target.reset();
   }
 
+  const updateMatch = async () => {
+    const data = {
+      id: "abeb7f7a-747f-4200-8ec8-5778d64382e2",
+      ScoreA: 2,
+      ScoreB: 2,
+      Active: true,
+    };
+    await API.graphql({
+      query: updateMatches,
+      variables: { input: data },
+    });
+  }
+
   async function deleteNote({ id }) {
     const newNotes = matches.filter((note) => note.id !== id);
     setMatches(newNotes);
@@ -60,7 +74,7 @@ const Matches = ({ signOut, user }) => {
     });
   }
 
-  return user.username === process.env.REACT_APP_WM ? (
+  return (
     <View className="App">
         <Heading level={1}>World Cup Matches 2022</Heading>
         <View as="form" margin="3rem 0" onSubmit={createMatch}>
@@ -87,7 +101,9 @@ const Matches = ({ signOut, user }) => {
             </Button>
             </Flex>
         </View>
-
+        <Button variation="primary" onClick={updateMatch}>
+            Update Match
+        </Button>
         <Heading level={2}>Current Matches</Heading>
         <View margin="3rem 0">
             {matches.map((match) => (
@@ -104,7 +120,16 @@ const Matches = ({ signOut, user }) => {
                 {match.TeamB}
                 </Text>
                 <Text as="strong">
-                {match.Order}
+                Order: {match.Order}
+                </Text>
+                <Text as="strong">
+                {match.ScoreA}
+                </Text>
+                <Text as="strong">
+                {match.ScoreB}
+                </Text>
+                <Text as="strong">
+                active: {match.Active ? 'true' : 'false'}
                 </Text>
                 <Button variation="link" onClick={() => deleteNote(match)}>
                 Delete Match
@@ -113,7 +138,7 @@ const Matches = ({ signOut, user }) => {
             ))}
         </View>
     </View>
-  ) : <h1>You are not authorized, to see this</h1>;
+  )
 };
 
 export default withAuthenticator(Matches);
