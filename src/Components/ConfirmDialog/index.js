@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-const ConfirmDialog = ({ handleAgree }) => {
+const ConfirmDialog = ({ handleAgree, message, disabled, caption}) => {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -24,8 +24,8 @@ const ConfirmDialog = ({ handleAgree }) => {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Click to Generate
+      <Button variant="outlined" disabled={disabled} onClick={handleClickOpen}>
+        {caption}
       </Button>
       <Dialog
         open={open}
@@ -34,12 +34,11 @@ const ConfirmDialog = ({ handleAgree }) => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Create list of matches"}
+          {caption}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Be aware that this process will ERASE all your current scores if any, 
-            and generate a new list of matches for you to enter scores. Do you want to proceed?
+            {message}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

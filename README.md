@@ -18,4 +18,10 @@ This app is deployed to the cloud [AWS Amplify services](https://aws.amazon.com/
 
 AWS Amplify is a set of products and tools that enable mobile and front-end web developers to build and deploy secure, scalable full-stack applications, powered by AWS.
 
+### Install and run
 
+```
+$ npm i
+$ REACT_APP_GROUP=myfriends REACT_APP_WM=webmaster REACT_APP_YEAR=2022 npm start
+
+```

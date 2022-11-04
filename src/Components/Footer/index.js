@@ -24,8 +24,7 @@ function Footer() {
                 <Button variant="text" onClick={handleClick({msg: 'call me'})}>Contact</Button>
                 <Button variant="text" onClick={handleClick({msg: 'trust me'})}>Privacy</Button>
             </Stack>
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top',
-          horizontal: 'right' }}>
+            <Snackbar open={open} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
                 <Alert onClose={handleClose} severity="info" sx={{ width: '100%' }}>
                     {msg}
                 </Alert>

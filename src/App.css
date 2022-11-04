@@ -8,7 +8,12 @@
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: left;
+  justify-content: space-between;
+}
+
+.generate-scores {
+  display: flex;
+  flex-direction: row;
 }
 
 .user-header Button {
@@ -37,3 +42,19 @@
   clear: both;
   font-family: "Raleway", Helvetica, Arial, sans-serif;
 }
+
+.admin-actions {
+  position: relative;
+  top: 20px;
+  margin: auto;
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+}
+
+.admin-actions button {
+  height: 54px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+

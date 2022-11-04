@@ -7,6 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import { withAuthenticator } from "@aws-amplify/ui-react";
@@ -16,17 +17,17 @@ import {
   updateMatchesResults as updateMatchesMutation,
 } from "../graphql/mutations";
 import ConfirmDialog from '../Components/ConfirmDialog'
-import { useApp } from '../contexts/App';
 import { generateScores } from './lib/utils'
+import PopMsg from "../Components/PopMsg";
 
-const UserMatches = () => {
-    const { appState } = useApp();
+const UserMatches = ({ user }) => {
     const [rows, setRows] = React.useState([]);
     const [showSpinner, setSpinner] = React.useState(true)
     const [openAlert, setOpenAlert] = React.useState(false);
+    const [pop, setPopMsg] = React.useState({ open: false, message: ''});
 
     useEffect(() => {
-        if (Object.keys(appState.user).length) {
+        if (Object.keys(user).length) {
             fetchUserMatches();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -35,7 +36,7 @@ const UserMatches = () => {
     const fetchUserMatches = async () => {
         const filter = { and: [
           { Group: { eq: process.env.REACT_APP_GROUP } },
-          { UserName: { eq: appState.user.username } }
+          { UserName: { eq: user.username } }
         ]};
 
         const apiData = await API.graphql({ query: listMatchesResults, variables: { filter } });
@@ -107,12 +108,14 @@ const UserMatches = () => {
 
         const updatedRow = { ...updRow, isNew: false };
         setRows(rows.map((row) => (row.id === updRow.id ? updatedRow : row)));
+        setPopMsg({ open: true, message: 'Score saved'});
+
         return updatedRow;
     };
     
     const handleGenerate = async () => {
         setSpinner(true);
-        await generateScores(appState.user.username);
+        await generateScores(user.username);
         fetchUserMatches();
     }
 
@@ -131,7 +134,9 @@ const UserMatches = () => {
           width: 100,
           flex: 0.3,
           cellClassName: 'actions',
-          getActions: ({ id }) => {
+          getActions: (props) => {
+            const id = props.id;
+            const isActive = props.row.Active;
             const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
             if (isInEditMode) {
@@ -152,25 +157,31 @@ const UserMatches = () => {
             }
 
             return [
-            <GridActionsCellItem
-                icon={<EditIcon />}
-                label="Edit"
-                className="textPrimary"
-                onClick={handleEditClick(id)}
-                color="inherit"
-            />,
-            ];
+              <GridActionsCellItem
+                  icon={<EditIcon />}
+                  label="Edit"
+                  className="textPrimary"
+                  onClick={handleEditClick(id)}
+                  color="inherit"
+                  disabled={!isActive}
+              />,
+            ]
           },
         },
-      ];
+    ];
 
+    const confirmMessage = `Be aware that this process will ERASE all your current scores if any, 
+    and generate a new list of matches for you to enter scores. Do you want to proceed?`;
+  
     return (
       <Container maxWidth="lg">
-        
+          <PopMsg {...pop} setPopMsg={setPopMsg} />
           <div className="user-header">
-              <div>Generate your quiniela and start entering your scores:</div>
-              {/* <Button variant="outlined" onClick={handleGenerate}>Generate</Button> */}
-              <ConfirmDialog handleAgree={handleGenerate} />
+              <div className="generate-scores">
+                  <span>Generate your quiniela and start entering your scores:</span>
+                  <ConfirmDialog handleAgree={handleGenerate} message={confirmMessage} disabled={false} caption="Generate you list of matches"/>
+              </div>
+              <Button variant="outlined" onClick={fetchUserMatches}>Refresh Results</Button>
           </div>
           <Collapse in={openAlert}>
             <Alert action={

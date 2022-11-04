@@ -16,7 +16,7 @@ const ListMatches = () => {
 
     async function fetchMatches() {
       const filter = { and: [
-        { Year: { eq: 2022 } },
+        { Year: { eq: process.env.REACT_APP_YEAR } },
       ]};
       const apiData = await API.graphql({ query: listMatches, variables: { filter } });
       const matchesFromAPI = apiData.data.listMatches.items;

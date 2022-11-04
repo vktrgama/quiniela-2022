@@ -89,7 +89,7 @@ const useApp = () => {
         const filter = { and: [
             { Active: { eq: true } }, 
             { Group: { eq: process.env.REACT_APP_GROUP } },
-            { Year: { eq: 2022 } }
+            { Year: { eq: process.env.REACT_APP_YEAR } }
         ] };
 
         const apiData = await API.graphql({ query: listUserPoints, variables: { filter } });

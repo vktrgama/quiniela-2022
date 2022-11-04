@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import { Button } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { Link } from 'react-router-dom'
 import Avatar from '@mui/material/Avatar';
 
 const UserAvatar = ({ handleSignOut, user }) => {
@@ -42,6 +43,10 @@ const UserAvatar = ({ handleSignOut, user }) => {
         <HtmlTooltip
             title={
             <React.Fragment>
+                {  user.username === process.env.REACT_APP_WM && <Button component={Link} to='/admin'>
+                    Admin
+                </Button>
+                }
                 <LogOutButton variant="contained" onClick={handleLogout} endIcon={<LogoutIcon />}>
                     Logout {user ? user.username : ''}
                 </LogOutButton>

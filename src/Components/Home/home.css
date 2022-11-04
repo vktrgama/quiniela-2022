@@ -9,15 +9,12 @@
     color: white;
 }
 
-.hero div {
-    padding: 20px;
-}
-
 .hero h1 {
     font-size: 40px;
 }
 
 .container-left {
+    margin-top: 20px;
     width: 40%;
     text-align: left;
 }
