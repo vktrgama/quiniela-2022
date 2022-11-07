@@ -40,13 +40,13 @@ const ListMatches = () => {
     
     const columns = [
       { field: 'Match', headerName: 'Match', editable: false, flex: 1, maxWidth: 90 },
-      { field: 'TeamA', headerName: 'Team', flex: 0.5, width: 100, editable: false },
-      { field: 'ScoreA', headerName: 'Score', flex: 0.5, type: 'number', editable: false },
-      { field: 'TeamB', headerName: 'Team',flex: 0.5,  width: 100, editable: false },
-      { field: 'ScoreB', headerName: 'Score', flex: 0.5, type: 'number', editable: false },
-      { field: 'Location', headerName: 'Location', flex: 1, width: 200, editable: false },
-      { field: 'Date', headerName: 'Date', flex: 0.5, width: 150, editable: false },
-      ];
+      { field: 'TeamA', headerName: 'Team', width: 150, editable: false },
+      { field: 'ScoreA', headerName: 'Score', type: 'number', editable: false },
+      { field: 'TeamB', headerName: 'Team', width: 150, editable: false },
+      { field: 'ScoreB', headerName: 'Score', type: 'number', editable: false },
+      { field: 'Location', headerName: 'Location', width: 200, editable: false },
+      { field: 'Date', headerName: 'Date', width: 150, editable: false },
+    ];
 
     return (
       <Container maxWidth="lg">

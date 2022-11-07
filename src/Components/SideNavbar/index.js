@@ -7,6 +7,8 @@ import {
   Button,
   IconButton
 } from '@mui/material';
+import SportsSoccerIcon from '@mui/icons-material/SportsSoccer'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import MenuIcon from '@mui/icons-material/Menu'
 import { Link } from "react-router-dom";
 import { useApp } from '../../contexts/App';
@@ -26,11 +28,18 @@ const SideNavbar = ({ signOut }) => {
     <>
       <Drawer open={openDrawer}  onClose={() => setOpenDrawer(false)}>
       <List>
+          <ListItem key={0} onClick={() => setOpenDrawer(false)}>
+            <ListItemText>
+                <IconButton component={Link} to="/" size='small' edge='start' color='inherit' aria-label='logo'>
+                    <SportsSoccerIcon />Home
+                </IconButton>
+            </ListItemText>
+          </ListItem>
           {appState.navigation.map((nav, idx) => (
               <ListItem key={idx} onClick={() => setOpenDrawer(false)}>
                   <ListItemText>
                       <Button component={Link} to={nav.path} color='inherit'>
-                          {nav.title}
+                          <ArrowForwardIosIcon />{nav.title}
                       </Button>
                   </ListItemText>
               </ListItem>
