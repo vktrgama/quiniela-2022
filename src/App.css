@@ -84,4 +84,7 @@
     .user-header {
         flex-direction: column;
     }
+    #add-match-form div:first-child {
+        flex-direction: column !important;
+    }
 }

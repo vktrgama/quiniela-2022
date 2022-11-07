@@ -39,11 +39,13 @@ const UserAvatar = ({ handleSignOut, user }) => {
         textTransform: 'none',
     });
 
+    const authorized = process.env.REACT_APP_WM && user.attributes && process.env.REACT_APP_WM.includes(`${user.attributes.sub}`)
+
     return Object.keys(user).length ? (
         <HtmlTooltip
             title={
             <React.Fragment>
-                {  user.username === process.env.REACT_APP_WM && <Button component={Link} to='/admin'>
+                {  authorized && <Button component={Link} to='/admin'>
                     Admin
                 </Button>
                 }

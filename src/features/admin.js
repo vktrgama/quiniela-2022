@@ -149,10 +149,11 @@ const Matches = ({ user }) => {
       setMatches(matches.map((match) => (match.id === updatedRow.id ? updatedRow : match)));
   }
 
+  const authorized = process.env.REACT_APP_WM && process.env.REACT_APP_WM.includes(`${user.attributes.sub}`)
   const confirmMessage = `This process will block all participants from making 
         any changes to their scores, do you want to continue?`;
   
-  return user.username === process.env.REACT_APP_WM ? (
+  return authorized ? (
       <View className="App">
           <Heading level={1}>World Cup Qatar 2022</Heading>
           <Collapse in={alert.open}>
@@ -170,7 +171,6 @@ const Matches = ({ user }) => {
             }severity="error">{alert.message}</Alert>
           </Collapse>
           <PopMsg {...pop} setPopMsg={setPopMsg} />
-              <h3>5192ff7e->{user.attributes.sub}</h3>
           <div className="admin-actions">
               <div>
                   <Button variant="outlined"  onClick={handleCalculation}>Calculate Points</Button>
@@ -179,7 +179,7 @@ const Matches = ({ user }) => {
               <Progress progress={progress} />
           </div>
           { showSpinner && <CircularProgress id='spinner' /> }
-          <View as="form" margin="3rem 0" onSubmit={createMatch}>
+          <View as="form" id='add-match-form' margin="3rem 0" onSubmit={createMatch}>
               <Flex direction="row" justifyContent="center">
               <TextField
                   name="order"

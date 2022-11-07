@@ -21,7 +21,7 @@ const NavBar = () => {
     return (
     <AppBar position='static'>
         {isMobile ? (
-            <SideNavbar />
+            <SideNavbar user={appState.user} />
         ) : (
             <Toolbar>
                 <IconButton component={Link} to="/" size='large' edge='start' color='inherit' aria-label='logo'>

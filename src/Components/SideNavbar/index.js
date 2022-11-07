@@ -15,7 +15,7 @@ import { useApp } from '../../contexts/App';
 import { Auth } from 'aws-amplify';
 import './sidenavbar.css'
 
-const SideNavbar = ({ signOut }) => {
+const SideNavbar = ({ user }) => {
   const { appState, Logout } = useApp();
   const [openDrawer, setOpenDrawer] = useState(false);
 
@@ -23,6 +23,8 @@ const SideNavbar = ({ signOut }) => {
     Logout();
     Auth.signOut();
   }
+
+  const authorized = process.env.REACT_APP_WM && user.attributes && process.env.REACT_APP_WM.includes(`${user.attributes.sub}`)
 
   return (
     <>
@@ -44,8 +46,17 @@ const SideNavbar = ({ signOut }) => {
                   </ListItemText>
               </ListItem>
           ))}
-          { Object.keys(appState.user).length ?
+          { authorized ?
             <ListItem key={appState.navigation.length + 1} onClick={() => setOpenDrawer(false)}>
+              <ListItemText>
+                <IconButton component={Link} to="/admin" size='small' edge='start' color='inherit' aria-label='logo'>
+                    <ArrowForwardIosIcon />Admin
+                </IconButton>
+              </ListItemText>
+            </ListItem> : ''
+          }
+          { Object.keys(user).length ?
+            <ListItem key={appState.navigation.length + 2} onClick={() => setOpenDrawer(false)}>
               <ListItemText>
                 <Button variant="text" onClick={handleSignOut}>Logout</Button>
               </ListItemText>
