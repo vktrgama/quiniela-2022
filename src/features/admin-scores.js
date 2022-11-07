@@ -32,7 +32,7 @@ const AdminMatches = ({rows, onDeleteMatch, onUpdateMatch, onNewMatch, onSaveMat
     };
 
     const handleEditClick = (id) => () => {
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit, fieldToFocus: 'ScoreA' } });
     };
 
     const handleSaveClick = (id) => () => {
@@ -55,9 +55,11 @@ const AdminMatches = ({rows, onDeleteMatch, onUpdateMatch, onNewMatch, onSaveMat
         if (newRow.isNew) {
             const updatedRow = { ...newRow, isNew: false };
             onSaveMatch(updatedRow);
+            return updatedRow;
         } else {
             const updatedRow = { ...newRow, isNew: false };
             onUpdateMatch(updatedRow);
+            return updatedRow;
         }
     };
     

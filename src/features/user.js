@@ -72,7 +72,7 @@ const UserMatches = ({ user }) => {
     };
 
     const handleEditClick = (id) => () => {
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit, fieldToFocus: 'ScoreA' } });
     };
 
     const handleSaveClick = (id) => () => {
