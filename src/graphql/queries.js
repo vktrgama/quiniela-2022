@@ -12,6 +12,7 @@ export const getMatches = /* GraphQL */ `
       Order
       Schedule
       Location
+      Active
       Year
       createdAt
       updatedAt
@@ -34,6 +35,7 @@ export const listMatches = /* GraphQL */ `
         Order
         Schedule
         Location
+        Active
         Year
         createdAt
         updatedAt
@@ -56,6 +58,7 @@ export const getMatchesResults = /* GraphQL */ `
         Order
         Schedule
         Location
+        Active
         Year
         createdAt
         updatedAt
@@ -90,6 +93,7 @@ export const listMatchesResults = /* GraphQL */ `
           Order
           Schedule
           Location
+          Active
           Year
           createdAt
           updatedAt

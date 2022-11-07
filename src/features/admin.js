@@ -14,18 +14,14 @@ import CancelIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
-import { listMatches } from "../graphql/queries";
-import {
-  createMatches as createMatchesMutation,
-  deleteMatches as deleteMatcheseMutation,
-  updateMatches as updateMatchesMutation,
-  updateMatchesResults
-} from "../graphql/mutations";
 import AdminScores from './admin-scores';
 import NotAuth from '../Components/NotAuth';
 import Progress from '../Components/Progress';
 import ConfirmDialog from '../Components/ConfirmDialog'
-import { calculateUserPoints, getAllScores } from './lib/utils'
+import PopMsg from "../Components/PopMsg";
+import { listMatches } from "../graphql/queries";
+import { createMatches, deleteMatches, updateMatches } from "../graphql/mutations";
+import { calculateUserPoints } from './lib/utils'
 import { useApp } from '../contexts/App';
 
 const Matches = ({ user }) => {
@@ -35,6 +31,7 @@ const Matches = ({ user }) => {
   const [progress, setProgress] = React.useState(0);
   const [alert, setAlert] = React.useState({open :false, message: ''});
   const [closeDisable, setDisabled] = React.useState(false);
+  const [pop, setPopMsg] = React.useState({ open: false, message: ''});
 
   useEffect(() => {
     fetchMatches();
@@ -53,11 +50,10 @@ const Matches = ({ user }) => {
 
   const handleCloseScores = async () => {
     setDisabled(true);
-    const matches = await getAllScores();
     for (const m in matches) {
         const percent = m * 100 / matches.length;
         await API.graphql({
-        query: updateMatchesResults,
+        query: updateMatches,
         variables: { input: {
             id: matches[m].id,
             Active: false,
@@ -65,6 +61,7 @@ const Matches = ({ user }) => {
         });
         setProgress(percent);
     }
+    fetchMatches();
     setDisabled(false)
     setProgress(0);
   }
@@ -86,11 +83,12 @@ const Matches = ({ user }) => {
       Order: form.get("order"),
       ScoreA: 0,
       ScoreB: 0,
+      Active: true,
       Location: form.get("location"),
       Schedule: form.get("schedule"),
     };
     await API.graphql({
-      query: createMatchesMutation,
+      query: createMatches,
       variables: { input: data },
     });
     fetchMatches();
@@ -99,11 +97,12 @@ const Matches = ({ user }) => {
 
   const deleteMatch = async (id) => {
     await API.graphql({
-      query: deleteMatcheseMutation,
+      query: deleteMatches,
       variables: { input: { id } },
     });
     const newMatches = matches.filter((match) => match.id !== id);
     setMatches(newMatches);
+    setPopMsg({ open: true, message: 'Match deleted'});
   }
 
   const updateMatch = async (updatedRow) => {
@@ -111,15 +110,16 @@ const Matches = ({ user }) => {
       id: updatedRow.id,
       ScoreA: updatedRow.ScoreA,
       ScoreB: updatedRow.ScoreB,
+      Active: updatedRow.Active,
     };
     await API.graphql({
-      query: updateMatchesMutation,
+      query: updateMatches,
       variables: { input: data },
     });
     setMatches(matches.map((match) => (match.id === updatedRow.id ? updatedRow : match)));
   }
 
-  const confirmMessage = `This process will block all participants to make 
+  const confirmMessage = `This process will block all participants from making 
         any changes to their scores, do you want to continue?`;
 
   return user.username === process.env.REACT_APP_WM ? (
@@ -139,8 +139,11 @@ const Matches = ({ user }) => {
             </IconButton>
             }severity="error">{alert.message}</Alert>
           </Collapse>
+          <PopMsg {...pop} setPopMsg={setPopMsg} />
           <div className="admin-actions">
-              <Button variant="outlined"  onClick={handleCalculation}>Calculate Points</Button>
+              <div>
+                  <Button variant="outlined"  onClick={handleCalculation}>Calculate Points</Button>
+              </div>
               <ConfirmDialog handleAgree={handleCloseScores} disabled={closeDisable} caption="Close Score Entering" message={confirmMessage} />
               <Progress progress={progress} />
           </div>

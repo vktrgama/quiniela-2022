@@ -1,0 +1,5 @@
+.progress-container #message {
+    margin-right: 10px;
+    top: -16px;
+    position: relative;
+}

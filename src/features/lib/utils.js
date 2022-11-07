@@ -2,11 +2,10 @@
 import { API } from "aws-amplify";  
 import { listMatches } from "../../graphql/queries";
 import { listMatchesResults, listUserPoints } from "../../graphql/queries";
-import { createMatchesResults as createResult, 
-    deleteMatchesResults as deletResults, 
-    deleteUserPoints, 
+import { 
     createUserPoints,
     updateUserPoints,
+    deleteUserPoints
 } from "../../graphql/mutations";
 
 const calculatePoints = (userMatch) => {
@@ -29,52 +28,37 @@ const calculatePoints = (userMatch) => {
     return totalPoints;
 };
 
-export const generateScores = async (userName) => {
-    const userFilter = { and: [
-        { Group: { eq: process.env.REACT_APP_GROUP } },
-        { UserName: { eq: userName } },
-        { Year: { eq: process.env.REACT_APP_YEAR } }
+export const getUserScores = async (userName) => {
+    let userFilter = {
+        and: [
+            { Group: { eq: process.env.REACT_APP_GROUP } },
+            { UserName: { eq: userName } },
+            { Year: { eq: process.env.REACT_APP_YEAR } },
     ]};
+
     // remove existing results
     const userResultsData = await API.graphql({ query: listMatchesResults, variables: { filter: userFilter } });
     const userResults = userResultsData.data.listMatchesResults.items;
-    for (const r in userResults) {
-        await API.graphql({
-            query: deletResults,
-            variables: { input: { id: userResults[r].id } },
-        });
-    };
+    return userResults;
+}
 
-    // create new results
-    const matchesData = await API.graphql({ query: listMatches, variables: { filter: { and: [
-        { Year: { eq: process.env.REACT_APP_YEAR } }
-    ]}} });
-    const matches = matchesData.data.listMatches.items;
-    for (const m in matches) {
-        const data = {
-            matchesResultsMatchId: matches[m].id,
-            ScoreA: 0,
-            ScoreB: 0,
-            UserName: userName,
-            Active: true,
-            Group: process.env.REACT_APP_GROUP,
-        };
-        await API.graphql({
-            query: createResult,
-            variables: { input: data },
-        });
-    };
-
+export const initUserPoints = async (userName) => {
     // delete user points
-    const usersData = await API.graphql({ query: listUserPoints, variables: { filter: userFilter } });
+    const usersData = await API.graphql({ query: listUserPoints, variables: { filter: {
+        and: [
+            { Group: { eq: process.env.REACT_APP_GROUP } },
+            { UserName: { eq: userName } },
+            { Year: { eq: process.env.REACT_APP_YEAR } },
+        ]} } });
+
     const users = usersData.data.listUserPoints.items;
-    if (users.length) {
+    for (const u in users) {
         await API.graphql({
             query: deleteUserPoints,
-            variables: { input: { id: users[0].id } },
+            variables: { input: { id: users[u].id } },
         });
     }
-
+    
     // init user points
     const data = {
         UserName: userName,
@@ -121,14 +105,14 @@ export const calculateUserPoints = async (userName) => {
     return true;
 }
 
-export const getAllScores = async (flag) => {
+export const getAllScores = async () => {
     const filter = { and: [
         { Year: { eq: process.env.REACT_APP_YEAR } },
-        { Group: { eq: process.env.REACT_APP_GROUP } },
         { Active: { eq: true } },
     ]};
 
-    const matchesData = await API.graphql({ query: listMatchesResults, variables: { filter } });
-    const matches = matchesData.data.listMatchesResults.items;
+    const matchesData = await API.graphql({ query: listMatches, variables: { filter } });
+    const matches = matchesData.data.listMatches.items;
+    matches.sort((a, b) => a.Order - b.Order);
     return matches;
 }

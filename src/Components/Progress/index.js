@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-
+import './progress.css';
 function CircularProgressWithLabel(props) {
   return (
     <Box sx={{ position: 'relative', display: 'inline-block' }}>
@@ -37,8 +37,11 @@ CircularProgressWithLabel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-const ProgressCircle = ({ progress })  => {
-  return progress > 0 ? <CircularProgressWithLabel value={progress} /> : '';
+const ProgressCircle = ({ progress, message })  => {
+  return progress > 0 ? <div className='progress-container'>
+            <span id='message'>{message}</span>
+            <CircularProgressWithLabel value={progress} />
+        </div> : '';
 }
 
 export default ProgressCircle;

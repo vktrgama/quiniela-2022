@@ -15,6 +15,7 @@ export const createMatches = /* GraphQL */ `
       Order
       Schedule
       Location
+      Active
       Year
       createdAt
       updatedAt
@@ -35,6 +36,7 @@ export const updateMatches = /* GraphQL */ `
       Order
       Schedule
       Location
+      Active
       Year
       createdAt
       updatedAt
@@ -55,6 +57,7 @@ export const deleteMatches = /* GraphQL */ `
       Order
       Schedule
       Location
+      Active
       Year
       createdAt
       updatedAt
@@ -78,6 +81,7 @@ export const createMatchesResults = /* GraphQL */ `
         Order
         Schedule
         Location
+        Active
         Year
         createdAt
         updatedAt
@@ -110,6 +114,7 @@ export const updateMatchesResults = /* GraphQL */ `
         Order
         Schedule
         Location
+        Active
         Year
         createdAt
         updatedAt
@@ -142,6 +147,7 @@ export const deleteMatchesResults = /* GraphQL */ `
         Order
         Schedule
         Location
+        Active
         Year
         createdAt
         updatedAt

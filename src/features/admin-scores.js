@@ -52,7 +52,8 @@ const AdminMatches = ({rows, onDeleteMatch, onUpdateMatch}) => {
         { field: 'TeamB', headerName: 'Team', width: 150, editable: false },
         { field: 'ScoreB', headerName: 'Score', type: 'number', editable: true },
         { field: 'Location', headerName: 'Location', width: 200, editable: false },
-        { field: 'Date', headerName: 'Date', width: 150, editable: false },
+        { field: 'Schedule', headerName: 'Date', width: 120, editable: false },
+        { field: 'Active', headerName: 'Active', width: 100, editable: true },
         {
           field: 'actions',
           type: 'actions',

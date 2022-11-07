@@ -16,6 +16,11 @@
   flex-direction: row;
 }
 
+.generate-scores div {
+  text-align: left;
+  width: 450px;
+}
+
 .user-header Button {
   margin-left: 20px;
 }
@@ -53,8 +58,12 @@
 }
 
 .admin-actions button {
-  height: 54px;
   margin-left: 20px;
   margin-right: 20px;
+}
+
+.admin-actions .progress-container {
+  position:relative;
+  top: -10px;
 }
 

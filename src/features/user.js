@@ -7,24 +7,23 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
+import PopMsg from "../Components/PopMsg";
+import ConfirmDialog from '../Components/ConfirmDialog'
+import Progress from '../Components/Progress';
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import { listMatchesResults } from "../graphql/queries";
 import { API } from "aws-amplify";
-import {
-  updateMatchesResults as updateMatchesMutation,
-} from "../graphql/mutations";
-import ConfirmDialog from '../Components/ConfirmDialog'
-import { generateScores } from './lib/utils'
-import PopMsg from "../Components/PopMsg";
+import { updateMatchesResults, createMatchesResults, deleteMatchesResults } from "../graphql/mutations";
+import { getAllScores, initUserPoints, getUserScores } from './lib/utils'
 
 const UserMatches = ({ user }) => {
     const [rows, setRows] = React.useState([]);
     const [showSpinner, setSpinner] = React.useState(true)
     const [openAlert, setOpenAlert] = React.useState(false);
     const [pop, setPopMsg] = React.useState({ open: false, message: ''});
+    const [progress, setProgress] = React.useState({inc: 0, msg: ''});
 
     useEffect(() => {
         if (Object.keys(user).length) {
@@ -34,13 +33,15 @@ const UserMatches = ({ user }) => {
     }, []);
 
     const fetchUserMatches = async () => {
-        const filter = { and: [
-          { Group: { eq: process.env.REACT_APP_GROUP } },
-          { UserName: { eq: user.username } }
-        ]};
+        const filter = {
+          and: [
+              { Group: { eq: process.env.REACT_APP_GROUP } },
+              { UserName: { eq: user.username } },
+          ],
+        };
 
-        const apiData = await API.graphql({ query: listMatchesResults, variables: { filter } });
-        const userMatches = apiData.data.listMatchesResults.items;
+        const userMatchedData = await API.graphql({ query: listMatchesResults, variables: { filter } });
+        const userMatches = userMatchedData.data.listMatchesResults.items;
         userMatches.sort((a, b) => a.Match.Order - b.Match.Order);
         
         const rows = userMatches.length ? userMatches.map(m => {
@@ -53,7 +54,7 @@ const UserMatches = ({ user }) => {
             ScoreB: m.ScoreB,
             Location: m.Match.Location,
             Date: m.Match.Schedule,
-            Active: m.Active
+            Active: m.Match.Active
           }
         }) : [];
         setRows(rows);
@@ -102,7 +103,7 @@ const UserMatches = ({ user }) => {
           ScoreB: updRow.ScoreB,
         };
         await API.graphql({
-          query: updateMatchesMutation,
+          query: updateMatchesResults,
           variables: { input: data },
         });
 
@@ -113,9 +114,48 @@ const UserMatches = ({ user }) => {
         return updatedRow;
     };
     
+    const removeActiveUserScores = async () => {
+        setProgress({ inc: 0, msg: 'Deleting user matches ...'});
+        const userScores = await getUserScores(user.username);
+        for (const s in userScores) {
+            if (userScores[s].Match.Active) {
+              const percent = s * 100 / userScores.length;
+                await API.graphql({
+                    query: deleteMatchesResults,
+                    variables: { input: { id: userScores[s].id } },
+                });
+                setProgress({ inc: percent, msg: 'Deleting user matches ...'});
+            }
+        };
+        setProgress({ inc: 0, msg: ''});
+    }
+
+    const createUserScores = async () => {
+        setProgress({ inc: 0, msg: 'Creating new matches ...'});
+        const matches = await getAllScores();
+        for (const m in matches){
+            const percent = m * 100 / matches.length;
+            const data = {
+              matchesResultsMatchId: matches[m].id,
+              ScoreA: 0,
+              ScoreB: 0,
+              UserName: user.username,
+              Active: true,
+              Group: process.env.REACT_APP_GROUP,
+            };
+            await API.graphql({
+                query: createMatchesResults,
+                variables: { input: data },
+            });
+            setProgress({ inc: percent, msg: 'Creating new matches ...'});
+        }
+        setProgress({ inc: 0, msg: ''});
+    }
+
     const handleGenerate = async () => {
-        setSpinner(true);
-        await generateScores(user.username);
+        await removeActiveUserScores();
+        await createUserScores();
+        await initUserPoints(user.username);
         fetchUserMatches();
     }
 
@@ -140,20 +180,20 @@ const UserMatches = ({ user }) => {
             const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
             if (isInEditMode) {
-            return [
-                <GridActionsCellItem
-                  icon={<SaveIcon />}
-                  label="Save"
-                  onClick={handleSaveClick(id)}
-                />,
-                <GridActionsCellItem
-                  icon={<CancelIcon />}
-                  label="Cancel"
-                  className="textPrimary"
-                  onClick={handleCancelClick(id)}
-                  color="inherit"
-                />,
-            ];
+                return [
+                    <GridActionsCellItem
+                      icon={<SaveIcon />}
+                      label="Save"
+                      onClick={handleSaveClick(id)}
+                    />,
+                    <GridActionsCellItem
+                      icon={<CancelIcon />}
+                      label="Cancel"
+                      className="textPrimary"
+                      onClick={handleCancelClick(id)}
+                      color="inherit"
+                    />,
+                ];
             }
 
             return [
@@ -170,7 +210,7 @@ const UserMatches = ({ user }) => {
         },
     ];
 
-    const confirmMessage = `Be aware that this process will ERASE all your current scores if any, 
+    const confirmMessage = `Be aware that this process will ERASE all the scores that are still ACTIVE (enabled pencil icon), those that are INACTIVE will remain, 
     and generate a new list of matches for you to enter scores. Do you want to proceed?`;
   
     return (
@@ -178,10 +218,10 @@ const UserMatches = ({ user }) => {
           <PopMsg {...pop} setPopMsg={setPopMsg} />
           <div className="user-header">
               <div className="generate-scores">
-                  <span>Generate your quiniela and start entering your scores:</span>
-                  <ConfirmDialog handleAgree={handleGenerate} message={confirmMessage} disabled={false} caption="Generate you list of matches"/>
+                  <div>Generate your list of games and start entering your scores, you can also use this button to generate elimination games when available:</div>
+                  <ConfirmDialog handleAgree={handleGenerate} message={confirmMessage} disabled={false} caption="Generate List"/>
               </div>
-              <Button variant="outlined" onClick={fetchUserMatches}>Refresh Results</Button>
+              <Progress progress={progress.inc} message={progress.msg} />
           </div>
           <Collapse in={openAlert}>
             <Alert action={

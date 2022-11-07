@@ -29,6 +29,7 @@ amplify/logs
 amplify/mock-data
 amplify/backend/amplify-meta.json
 amplify/backend/.temp
+amplify/backend/api/vktrbackend
 build/
 dist/
 node_modules/
