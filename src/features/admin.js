@@ -105,23 +105,53 @@ const Matches = ({ user }) => {
     setPopMsg({ open: true, message: 'Match deleted'});
   }
 
+  const addNewMatch = (id) => {
+      setMatches([...matches, { id, Order: matches.length + 1, isNew: true }]);
+  }
+
+  const cancelNewMatch = (id) => {
+      const newRow = matches.filter((match) => match.id === id);
+      if (newRow && newRow[0].isNew) {
+          const restoreMatches = matches.filter((match) => match.id !== id);
+          setMatches(restoreMatches);
+      }
+  }
+
+  const saveNewMatch = async (newRow) => {
+      const data = {
+        TeamA: newRow.TeamA,
+        TeamB: newRow.TeamB,
+        Order: newRow.Order,
+        ScoreA: 0,
+        ScoreB: 0,
+        Active: true,
+        Location: newRow.Location,
+        Schedule: newRow.Schedule,
+      };
+      await API.graphql({
+        query: createMatches,
+        variables: { input: data },
+      });
+      fetchMatches();
+  }
+
   const updateMatch = async (updatedRow) => {
-    const data = {
-      id: updatedRow.id,
-      ScoreA: updatedRow.ScoreA,
-      ScoreB: updatedRow.ScoreB,
-      Active: updatedRow.Active,
-    };
-    await API.graphql({
-      query: updateMatches,
-      variables: { input: data },
-    });
-    setMatches(matches.map((match) => (match.id === updatedRow.id ? updatedRow : match)));
+      const data = {
+        id: updatedRow.id,
+        ScoreA: updatedRow.ScoreA,
+        ScoreB: updatedRow.ScoreB,
+        Active: updatedRow.Active,
+      };
+      await API.graphql({
+        query: updateMatches,
+        variables: { input: data },
+      });
+      setMatches(matches.map((match) => (match.id === updatedRow.id ? updatedRow : match)));
   }
 
   const confirmMessage = `This process will block all participants from making 
         any changes to their scores, do you want to continue?`;
-
+  
   return user.username === process.env.REACT_APP_WM ? (
       <View className="App">
           <Heading level={1}>World Cup Qatar 2022</Heading>
@@ -196,7 +226,7 @@ const Matches = ({ user }) => {
           </View>
 
           <Heading level={2}>Update Final Scores</Heading>
-          <AdminScores rows={matches} onDeleteMatch={deleteMatch} onUpdateMatch={updateMatch} />
+          <AdminScores rows={matches} onDeleteMatch={deleteMatch} onUpdateMatch={updateMatch} onNewMatch={addNewMatch} onSaveMatch={saveNewMatch} onCancel={cancelNewMatch} />
       </View>
   ) : <NotAuth/>;
 };

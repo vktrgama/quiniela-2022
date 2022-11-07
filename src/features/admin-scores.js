@@ -6,10 +6,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import { randomId } from '@mui/x-data-grid-generator';
+import AdminToolBar from '../Components/AdminToolBar';
 import { withAuthenticator } from "@aws-amplify/ui-react";
 
-const AdminMatches = ({rows, onDeleteMatch, onUpdateMatch}) => {
-    
+const AdminMatches = ({rows, onDeleteMatch, onUpdateMatch, onNewMatch, onSaveMatch, onCancel }) => {
     const [rowModesModel, setRowModesModel] = React.useState({});
 
     const handleRowEditStart = (params, event) => {
@@ -18,6 +19,16 @@ const AdminMatches = ({rows, onDeleteMatch, onUpdateMatch}) => {
     
     const handleRowEditStop = (params, event) => {
         event.defaultMuiPrevented = true;
+    };
+
+    const handleAddNewClick = () => {
+      const id = randomId();
+      onNewMatch(id);
+
+      setRowModesModel((rowModesModel) => ({
+        ...rowModesModel,
+        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'TeamA' },
+      }));
     };
 
     const handleEditClick = (id) => () => {
@@ -33,6 +44,7 @@ const AdminMatches = ({rows, onDeleteMatch, onUpdateMatch}) => {
             ...rowModesModel,
             [id]: { mode: GridRowModes.View, ignoreModifications: true },
         });
+        onCancel(id);
     };
 
     const handleDeleteClick = (id) => () => {
@@ -40,19 +52,23 @@ const AdminMatches = ({rows, onDeleteMatch, onUpdateMatch}) => {
     };
 
     const processRowUpdate = async (newRow) => {
-        const updatedRow = { ...newRow, isNew: false };
-        onUpdateMatch(updatedRow);
-        return updatedRow;
+        if (newRow.isNew) {
+            const updatedRow = { ...newRow, isNew: false };
+            onSaveMatch(updatedRow);
+        } else {
+            const updatedRow = { ...newRow, isNew: false };
+            onUpdateMatch(updatedRow);
+        }
     };
     
     const columns = [
-        { field: 'Order', headerName: 'Match', editable: false, flex: 1, maxWidth: 90 },
-        { field: 'TeamA', headerName: 'Team', width: 150, editable: false },
+        { field: 'Order', headerName: 'Match', editable: true, flex: 1, maxWidth: 90 },
+        { field: 'TeamA', headerName: 'Team', width: 150, editable: true },
         { field: 'ScoreA', headerName: 'Score', type: 'number', editable: true },
-        { field: 'TeamB', headerName: 'Team', width: 150, editable: false },
+        { field: 'TeamB', headerName: 'Team', width: 150, editable: true },
         { field: 'ScoreB', headerName: 'Score', type: 'number', editable: true },
-        { field: 'Location', headerName: 'Location', width: 200, editable: false },
-        { field: 'Schedule', headerName: 'Date', width: 120, editable: false },
+        { field: 'Location', headerName: 'Location', width: 200, editable: true },
+        { field: 'Schedule', headerName: 'Date', width: 120, editable: true },
         { field: 'Active', headerName: 'Active', width: 100, editable: true },
         {
           field: 'actions',
@@ -115,6 +131,12 @@ const AdminMatches = ({rows, onDeleteMatch, onUpdateMatch}) => {
             onRowEditStart={handleRowEditStart}
             onRowEditStop={handleRowEditStop}
             hideFooterSelectedRowCount={true}
+            components={{
+              Toolbar: AdminToolBar,
+            }}
+            componentsProps={{
+              toolbar: { onAddNewClick: handleAddNewClick },
+            }}
           />
         </Box>
       </Container>
