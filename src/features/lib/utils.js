@@ -5,7 +5,6 @@ import { listMatchesResults, listUserPoints } from "../../graphql/queries";
 import { 
     createUserPoints,
     updateUserPoints,
-    deleteUserPoints
 } from "../../graphql/mutations";
 
 const calculatePoints = (userMatch) => {
@@ -37,9 +36,9 @@ export const getUserScores = async (userName) => {
     ]};
 
     // remove existing results
-    const userResultsData = await API.graphql({ query: listMatchesResults, variables: { filter: userFilter } });
+    const userResultsData = await API.graphql({ query: listMatchesResults, variables: { filter: userFilter, limit: 200 } });
     const userResults = userResultsData.data.listMatchesResults.items;
-    return userResults;
+    return [...userResults];
 }
 
 export const initUserPoints = async (userName) => {
@@ -52,24 +51,19 @@ export const initUserPoints = async (userName) => {
         ]} } });
 
     const users = usersData.data.listUserPoints.items;
-    for (const u in users) {
+    if (users.length === 0) {
+        // init user points
+        const data = {
+            UserName: userName,
+            Total: 0,
+            Active: true,
+            Group: process.env.REACT_APP_GROUP,
+        };
         await API.graphql({
-            query: deleteUserPoints,
-            variables: { input: { id: users[u].id } },
+            query: createUserPoints,
+            variables: { input: data },
         });
     }
-    
-    // init user points
-    const data = {
-        UserName: userName,
-        Total: 0,
-        Active: true,
-        Group: process.env.REACT_APP_GROUP,
-    };
-    await API.graphql({
-        query: createUserPoints,
-        variables: { input: data },
-    });
 };
 
 export const calculateUserPoints = async (userName) => {
@@ -111,8 +105,8 @@ export const getAllScores = async () => {
         { Active: { eq: true } },
     ]};
 
-    const matchesData = await API.graphql({ query: listMatches, variables: { filter } });
+    const matchesData = await API.graphql({ query: listMatches, variables: { filter, limit: 200 } });
     const matches = matchesData.data.listMatches.items;
     matches.sort((a, b) => a.Order - b.Order);
-    return matches;
+    return [...matches];
 }

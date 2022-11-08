@@ -11,19 +11,18 @@ import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import PopMsg from "../Components/PopMsg";
 import ConfirmDialog from '../Components/ConfirmDialog'
-import Progress from '../Components/Progress';
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import { listMatchesResults } from "../graphql/queries";
 import { API } from "aws-amplify";
 import { updateMatchesResults, createMatchesResults, deleteMatchesResults } from "../graphql/mutations";
 import { getAllScores, initUserPoints, getUserScores } from './lib/utils'
+import asyncBatch from 'async-batch';
 
 const UserMatches = ({ user }) => {
     const [rows, setRows] = React.useState([]);
     const [showSpinner, setSpinner] = React.useState(true)
     const [openAlert, setOpenAlert] = React.useState(false);
     const [pop, setPopMsg] = React.useState({ open: false, message: ''});
-    const [progress, setProgress] = React.useState({inc: 0, msg: ''});
 
     useEffect(() => {
         if (Object.keys(user).length) {
@@ -40,7 +39,7 @@ const UserMatches = ({ user }) => {
           ],
         };
 
-        const userMatchedData = await API.graphql({ query: listMatchesResults, variables: { filter } });
+        const userMatchedData = await API.graphql({ query: listMatchesResults, variables: { filter, limit: 200 } });
         const userMatches = userMatchedData.data.listMatchesResults.items;
         userMatches.sort((a, b) => a.Match.Order - b.Match.Order);
         
@@ -115,48 +114,47 @@ const UserMatches = ({ user }) => {
     };
     
     const removeActiveUserScores = async () => {
-        setProgress({ inc: 0, msg: 'Deleting user matches ...'});
         const userScores = await getUserScores(user.username);
-        for (const s in userScores) {
-            if (userScores[s].Match.Active) {
-              const percent = s * 100 / userScores.length;
+        const Parallelism = 4;
+        const asyncMethod = async (result) => {
+            if (result.Match.Active) {
                 await API.graphql({
                     query: deleteMatchesResults,
-                    variables: { input: { id: userScores[s].id } },
+                    variables: { input: { id: result.id } },
                 });
-                setProgress({ inc: percent, msg: 'Deleting user matches ...'});
             }
         };
-        setProgress({ inc: 0, msg: ''});
+  
+        await asyncBatch(userScores, asyncMethod, Parallelism);
     }
 
     const createUserScores = async () => {
-        setProgress({ inc: 0, msg: 'Creating new matches ...'});
         const matches = await getAllScores();
-        for (const m in matches){
-            const percent = m * 100 / matches.length;
-            const data = {
-              matchesResultsMatchId: matches[m].id,
+        const Parallelism = 4;
+        const asyncMethod = async (match) => {
+          const data = {
+              matchesResultsMatchId: match.id,
               ScoreA: 0,
               ScoreB: 0,
               UserName: user.username,
               Active: true,
               Group: process.env.REACT_APP_GROUP,
-            };
-            await API.graphql({
-                query: createMatchesResults,
-                variables: { input: data },
-            });
-            setProgress({ inc: percent, msg: 'Creating new matches ...'});
-        }
-        setProgress({ inc: 0, msg: ''});
+          };
+          await API.graphql({
+              query: createMatchesResults,
+              variables: { input: data },
+          });
+        };
+        await asyncBatch(matches, asyncMethod, Parallelism);
     }
 
     const handleGenerate = async () => {
+        setSpinner(true);
         await removeActiveUserScores();
         await createUserScores();
         await initUserPoints(user.username);
         fetchUserMatches();
+        setSpinner(false);
     }
 
     const columns = [
@@ -221,7 +219,6 @@ const UserMatches = ({ user }) => {
                   <div>Generate your list of games and start entering your scores, you can also use this button to generate elimination games when available:</div>
                   <ConfirmDialog handleAgree={handleGenerate} message={confirmMessage} disabled={false} caption="Generate List"/>
               </div>
-              <Progress progress={progress.inc} message={progress.msg} />
           </div>
           <Collapse in={openAlert}>
             <Alert action={

@@ -16,19 +16,18 @@ import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import AdminScores from './admin-scores';
 import NotAuth from '../Components/NotAuth';
-import Progress from '../Components/Progress';
 import ConfirmDialog from '../Components/ConfirmDialog'
 import PopMsg from "../Components/PopMsg";
 import { listMatches } from "../graphql/queries";
 import { createMatches, deleteMatches, updateMatches } from "../graphql/mutations";
 import { calculateUserPoints } from './lib/utils'
 import { useApp } from '../contexts/App';
+import asyncBatch from 'async-batch';
 
 const Matches = ({ user }) => {
   const { fetchParticipants } = useApp();
   const [matches, setMatches] = useState([]);
   const [showSpinner, setSpinner] = React.useState(false)
-  const [progress, setProgress] = React.useState(0);
   const [alert, setAlert] = React.useState({open :false, message: ''});
   const [closeDisable, setDisabled] = React.useState(false);
   const [pop, setPopMsg] = React.useState({ open: false, message: ''});
@@ -49,21 +48,23 @@ const Matches = ({ user }) => {
   }
 
   const handleCloseScores = async () => {
-    setDisabled(true);
-    for (const m in matches) {
-        const percent = m * 100 / matches.length;
-        await API.graphql({
-        query: updateMatches,
-        variables: { input: {
-            id: matches[m].id,
-            Active: false,
-            }},
-        });
-        setProgress(percent);
-    }
-    fetchMatches();
-    setDisabled(false)
-    setProgress(0);
+      setSpinner(true);
+      setDisabled(true);
+      const Parallelism = 4;
+      const asyncMethod = async (match) => {
+          await API.graphql({
+            query: updateMatches,
+            variables: { input: {
+                id: match.id,
+                Active: false,
+              }},
+          });
+      };
+
+      await asyncBatch(matches, asyncMethod, Parallelism);
+      fetchMatches();
+      setDisabled(false)
+      setSpinner(false);
   }
 
   async function fetchMatches() {
@@ -176,7 +177,6 @@ const Matches = ({ user }) => {
                   <Button variant="outlined"  onClick={handleCalculation}>Calculate Points</Button>
               </div>
               <ConfirmDialog handleAgree={handleCloseScores} disabled={closeDisable} caption="Close Score Entering" message={confirmMessage} />
-              <Progress progress={progress} />
           </div>
           { showSpinner && <CircularProgress id='spinner' /> }
           <View as="form" id='add-match-form' margin="3rem 0" onSubmit={createMatch}>
