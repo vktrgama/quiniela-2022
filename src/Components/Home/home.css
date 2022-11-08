@@ -22,3 +22,16 @@
 .container-right {
     width: 40%;
 }
+
+#donate-button button span {
+    display: inline-block;
+}
+
+#donate-button a {
+    text-decoration: none;
+    color: white;
+}
+
+#donate-button a:hover {
+    text-decoration-line: underline;
+}
