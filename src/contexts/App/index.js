@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Auth } from 'aws-amplify';
 import { listUserPoints, listMatchesResults } from "../../graphql/queries";
 import { API } from "aws-amplify";
+import countryCodes from '../../features/lib/country-codes.json';
 
 const AppContext = React.createContext([]);
 
@@ -36,6 +37,7 @@ const initialState = {
             title: 'User Matches',
         },
     ],
+    countryCodes,
 };
 
 const reducer = (state, action) => {

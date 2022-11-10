@@ -5,6 +5,7 @@ import Container from '@mui/material/Container';
 import CircularProgress from '@mui/material/CircularProgress';
 import { listMatches } from "../graphql/queries";
 import { API } from "aws-amplify";
+import FlagImage from '../Components/FlagImage';
 
 const ListMatches = () => {
     const [rows, setRows] = React.useState([]);
@@ -39,9 +40,11 @@ const ListMatches = () => {
     }
     
     const columns = [
-      { field: 'Match', headerName: 'Match', editable: false, flex: 1, maxWidth: 90 },
+      { field: 'Match', headerName: 'Match', editable: false, maxWidth: 90 },
+      { field: 'home', headerName: 'Flag', editable: false, width: 20, renderCell: FlagImage },
       { field: 'TeamA', headerName: 'Team', width: 150, editable: false },
       { field: 'ScoreA', headerName: 'Score', type: 'number', editable: false },
+      { field: 'away', headerName: 'Flag', editable: false, width: 20, renderCell: FlagImage },
       { field: 'TeamB', headerName: 'Team', width: 150, editable: false },
       { field: 'ScoreB', headerName: 'Score', type: 'number', editable: false },
       { field: 'Location', headerName: 'Location', width: 200, editable: false },
