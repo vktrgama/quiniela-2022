@@ -139,9 +139,14 @@ const Matches = ({ user }) => {
   const updateMatch = async (updatedRow) => {
       const data = {
         id: updatedRow.id,
+        Order: updatedRow.Order,
+        TeamA: updatedRow.TeamA,
+        TeamB: updatedRow.TeamB,
         ScoreA: updatedRow.ScoreA,
         ScoreB: updatedRow.ScoreB,
         Active: updatedRow.Active,
+        Location: updatedRow.Location,
+        Schedule: updatedRow.Schedule,
       };
       await API.graphql({
         query: updateMatches,
