@@ -10,14 +10,6 @@
       "StackName": "amplify-vktrbackend-staging-141922",
       "StackId": "arn:aws:cloudformation:us-east-1:327861948128:stack/amplify-vktrbackend-staging-141922/afb27d40-5794-11ed-a6b6-12c701524fad",
       "AmplifyAppId": "dmczwo8q4tie7"
-    },
-    "categories": {
-      "api": {
-        "vktrbackend": {}
-      },
-      "auth": {
-        "vktrbackend04a630d0": {}
-      }
     }
   }
 }
