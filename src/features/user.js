@@ -14,9 +14,10 @@ import ConfirmDialog from '../Components/ConfirmDialog'
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import { listMatchesResults } from "../graphql/queries";
 import { API } from "aws-amplify";
+import asyncBatch from 'async-batch';
 import { updateMatchesResults, createMatchesResults, deleteMatchesResults } from "../graphql/mutations";
 import { getAllScores, initUserPoints, getUserScores } from './lib/utils'
-import asyncBatch from 'async-batch';
+import FlagImage from '../Components/FlagImage';
 
 const UserMatches = ({ user }) => {
     const [rows, setRows] = React.useState([]);
@@ -159,8 +160,10 @@ const UserMatches = ({ user }) => {
 
     const columns = [
         { field: 'Match', headerName: 'Match', editable: false, flex: 1, maxWidth: 90 },
+        { field: 'home', headerName: 'Flag', editable: false, width: 20, renderCell: FlagImage },
         { field: 'TeamA', headerName: 'Team', width: 150, editable: false },
         { field: 'ScoreA', headerName: 'Score', type: 'number', editable: true },
+        { field: 'away', headerName: 'Flag', editable: false, width: 20, renderCell: FlagImage },
         { field: 'TeamB', headerName: 'Team', width: 150, editable: false },
         { field: 'ScoreB', headerName: 'Score', type: 'number', editable: true },
         { field: 'Location', headerName: 'Location', width: 200, editable: false },
