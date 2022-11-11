@@ -98,6 +98,7 @@ const useApp = () => {
         const userList = apiData.data.listUserPoints.items;
         const activeUsers = userList.filter(m => m.Active);
 
+        activeUsers.sort((a, b) => b.Total - a.Total);
         const users = activeUsers.map(u => {
             return {
                 id: u.id,
