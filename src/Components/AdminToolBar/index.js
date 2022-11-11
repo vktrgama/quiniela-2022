@@ -12,7 +12,7 @@ const AdminToolbar = ({ onAddNewClick }) => {
   return (
     <GridToolbarContainer>
       <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-        Add record
+        Add a match
       </Button>
     </GridToolbarContainer>
   );

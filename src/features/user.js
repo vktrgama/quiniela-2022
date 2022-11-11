@@ -214,12 +214,15 @@ const UserMatches = ({ user }) => {
     const confirmMessage = `Be aware that this process will ERASE all the scores that are still ACTIVE (enabled pencil icon), those that are INACTIVE will remain, 
     and generate a new list of matches for you to enter scores. Do you want to proceed?`;
   
+    const infoMessage = `Start by generating a list of games or matches for your account by pressing the [Generate List] button, 
+          then you can start entering your predictions. Games for final brakets will be available at the time teams are determined.`;
+
     return (
       <Container maxWidth="lg">
           <PopMsg {...pop} setPopMsg={setPopMsg} />
           <div className="user-header">
               <div className="generate-scores">
-                  <div>Generate your list of games and start entering your scores, you can also use this button to generate elimination games when available:</div>
+                  <div>{infoMessage}</div>
                   <ConfirmDialog handleAgree={handleGenerate} message={confirmMessage} disabled={false} caption="Generate List"/>
               </div>
           </div>

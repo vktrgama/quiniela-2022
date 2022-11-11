@@ -23,7 +23,7 @@ function Footer() {
                 <span>COPYRIGHT 2022</span>
                 <Button variant="text" onClick={handleClick({msg: 'Ping me: vktrgama@gmail.com'})}>Contact</Button>
                 <Button variant="text" onClick={handleClick({msg: 'Trust me, is private.'})}>Privacy</Button>
-                <Button variant="text" onClick={handleClick({msg: 'React, AWS Amplify, GraphQL, & DynamoDb.'})}>About</Button>
+                <Button variant="text" onClick={handleClick({msg: 'React, Material-UI, AWS Amplify, GraphQL, & DynamoDb.'})}>About</Button>
             </Stack>
             <Snackbar open={open} autoHideDuration={4000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
                 <Alert onClose={handleClose} severity="info" sx={{ width: '100%' }}>
