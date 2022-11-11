@@ -7,10 +7,9 @@ const rules = () => {
                 <div className="entry-content">
                     <h3>GENERAL RULES</h3>
                     <ul>
-                        <li>Quinielas can be created up to two (2) hours before the start of the tournament (scheduled kick off time of the first match).</li>
-                        <li>Participants are allowed to join a Quiniela up to the start of the tournament (scheduled kick off time of the first match).</li>
-                        <li>Prediction Entries and modifications will be accepted up to the scheduled kick off time of the first match</li>
-                        {/* <li>Prediction Entries from all Quiniela Participants will be available to every Quiniela Participant after the match scheduled kick off time.</li> */}
+                        <li>You can enter your predictions up to two (2) hours before the start of the tournament (the scheduled kick off time of the first match).</li>
+                        <li>Participants are allowed to join up to the start of the tournament (the scheduled kick off time of the first match).</li>
+                        <li>Prediction entries and modifications will be accepted up to the scheduled kick off time of the first match</li>
                         <li>Points will be granted as follows (Default Point Awards) when predictions match Results and Home/Away Goals:
                             <ul>
                                 <li>Match Outcome (winner/loser, tie): +3 points</li>

@@ -10,7 +10,6 @@ const FlagImage = (params) => {
     if (suffix) {
         const imgUrl = `https://cloudinary.fifa.com/api/v3/picture/flags-sq-4/${suffix.code}?tx=c_fill,g_auto,q_auto,w_32`;
         return <Avatar key={params.id} variant='square'
-            alt="Remy Sharp"
             src={imgUrl}
             sx={{ width: 32, height: 21 }}
         />

@@ -12,6 +12,7 @@ import Matches from './features/matches'
 import Participants from './features/participants'
 import UserMatches from './features/user'
 import Admin from "./features/admin";
+import ParticipantMatches from "./features/participant-matches";
 import { useApp } from './contexts/App';
 import { Hub } from 'aws-amplify';
 import './App.css';
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/participants" element={<Participants/>}/>
                 <Route path="/user" element={<UserMatches/>}/>
                 <Route path="/admin" element={<Admin />} />
+                <Route path="/participant-matches" element={<ParticipantMatches />} />
                 <Route exact path="/signin" element={<div>this are the login</div>} />
                 <Route path="*" element={<div>nopage</div>} />
           </Routes>
