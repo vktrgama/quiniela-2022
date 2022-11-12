@@ -67,6 +67,10 @@
   top: -10px;
 }
 
+.hero > div {
+    align-items: baseline;
+}
+
 @media only screen and (max-width: 768px) {
     /* For mobile phones: */
     .hero div:nth-child(1) {
