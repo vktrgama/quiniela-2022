@@ -36,11 +36,11 @@ const Home = () => {
                     <h1>Welcome to Quiniela Qatar 2022</h1>
                     <div id="donate-button-container">
                         <div id="donate-button">
-                            <p>(Para espaniol, use google translate, en la esquina inferior derecha).</p>
-                            <p>Just to make it interesting, your participation required a donation of $10.00, using the button below. FYI, Paypal takes a 3% (*) comission from it, so winner will get the rest (accumalted $7.00 from each participant), people with no donation will be removed when the turnament starts.</p>
+                            <p><b>(Para espaniol, usa el traductor de google que esta en la esquina inferior derecha)</b>.</p>
+                            <p>To make it interesting, your participation required a donation of $15.00, using the button below. FYI, Paypal takes a 3% (*) comission from it, so, the winner will get the rest (accumulated per participant), people with no donation will be removed when the turnament starts.</p>
                             <p>Winner takes all, no second or third place. Winner is the person with the high number of points, if a draw happen, person with more exact results wins.</p>
                             <Button variant="contained" endIcon={<SendIcon />} onClick={handlePaypal}>Donate</Button>
-                            <p><a href="https://www.paypal.com/webapps/mpp/merchant-fees">PayPal comission details <b>here</b></a></p>
+                            <p><a href="https://www.paypal.com/webapps/mpp/merchant-fees" target="_new">PayPal comission details <b>here</b></a> under <i>Receiving and Sending Donations</i></p>
                         </div>
                     </div>
                 </div>
