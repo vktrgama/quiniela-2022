@@ -28,6 +28,9 @@ const Home = () => {
             <Stack direction='row' spacing={2} justifyContent='center' alignItems='center' divider={<Divider orientation='vertical' flexItem />}>
                 <div className='container-left'>
                     <h1>Welcome to Quiniela Qatar 2022</h1>
+                    <div>
+                        <p><b>To start click [User Matches] from the menu above.</b></p>
+                    </div>
                 </div>
                 <div className='container-right'>
                 <Stack
