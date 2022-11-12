@@ -68,7 +68,7 @@
 }
 
 .hero > div {
-    align-items: baseline;
+  align-items: baseline;
 }
 
 @media only screen and (max-width: 768px) {

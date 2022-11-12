@@ -40,7 +40,7 @@ const UserMatches = ({ user }) => {
           ],
         };
 
-        const userMatchedData = await API.graphql({ query: listMatchesResults, variables: { filter, limit: 200 } });
+        const userMatchedData = await API.graphql({ query: listMatchesResults, variables: { filter, limit: 4000 } });
         const userMatches = userMatchedData.data.listMatchesResults.items;
         userMatches.sort((a, b) => a.Match.Order - b.Match.Order);
         

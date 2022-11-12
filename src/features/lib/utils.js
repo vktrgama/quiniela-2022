@@ -6,6 +6,11 @@ import {
     createUserPoints,
     updateUserPoints,
 } from "../../graphql/mutations";
+import moment from 'moment';
+import { Today } from "@mui/icons-material";
+import asyncBatch from 'async-batch';
+
+const resultsLimit = { limit: 4000 };
 
 const calculatePoints = (userMatch) => {
     let totalPoints = 0;
@@ -36,7 +41,7 @@ export const getUserScores = async (userName) => {
     ]};
 
     // remove existing results
-    const userResultsData = await API.graphql({ query: listMatchesResults, variables: { filter: userFilter, limit: 200 } });
+    const userResultsData = await API.graphql({ query: listMatchesResults, variables: { filter: userFilter, ...resultsLimit } });
     const userResults = userResultsData.data.listMatchesResults.items;
     return [...userResults];
 }
@@ -66,7 +71,7 @@ export const initUserPoints = async (userName) => {
     }
 };
 
-export const calculateUserPoints = async (userName) => {
+export const calculateUserPoints = async () => {
     // get all users
     const usersData = await API.graphql({ query: listUserPoints, variables: { filter: { and: [
         { Group: { eq: process.env.REACT_APP_GROUP } },
@@ -74,19 +79,24 @@ export const calculateUserPoints = async (userName) => {
     ]} }});
     const users = usersData.data.listUserPoints.items;
 
-    // compare user matches with real matches, and accumulate points
-    for (const u in users) {
-        const user = users[u];
+    const Parallelism = 2;
+    const asyncMethod = async (user) => {
         const userMatchesData = await API.graphql({ query: listMatchesResults, variables: { filter: { and: [
             { Group: { eq: process.env.REACT_APP_GROUP } },
             { UserName: { eq: user.UserName } },
             { Year: { eq: process.env.REACT_APP_YEAR } }
-        ]}}});
+            ]}, ...resultsLimit
+        }});
 
         const userMatches = userMatchesData.data.listMatchesResults.items;
         let totalPoints = 0;
         for (const m in userMatches) {
-            totalPoints += calculatePoints(userMatches[m]);
+            const matchDate = moment(userMatches[m].Match.Schedule, "DD-MMM-YY");
+            const today = moment(Today);
+            if (today.diff(matchDate) >= 0) {
+                totalPoints += calculatePoints(userMatches[m]);
+                console.log('calculate points', totalPoints)
+            };
         }
 
         // save points to user
@@ -94,7 +104,9 @@ export const calculateUserPoints = async (userName) => {
             query: updateUserPoints,
             variables: { input: { id: user.id, Total: totalPoints } }
         });
-    }
+    };
+
+    await asyncBatch(users, asyncMethod, Parallelism);
 
     return true;
 }
