@@ -37,7 +37,7 @@ const Home = () => {
                     <div id="donate-button-container">
                         <div id="donate-button">
                             <p><b>(Para espaniol, usa el traductor de google que esta en la esquina inferior derecha)</b>.</p>
-                            <p>To make it interesting, your participation required a donation of $15.00, using the button below. FYI, Paypal takes a 3% (*) comission from it, so, the winner will get the rest (accumulated per participant), people with no donation will be removed when the turnament starts.</p>
+                            <p>To make it interesting, your participation requires a donation of $15.00, using the button below. FYI, PayPal takes a 3% (*) comission from it, so, the winner will get the rest (accumulated per participant), people with no donation will be removed when the turnament starts.</p>
                             <p>Winner takes all, no second or third place. Winner is the person with the higher number of points, if a draw happen, person with more exact results wins in the elimination brackets.</p>
                             <Button variant="contained" endIcon={<SendIcon />} onClick={handlePaypal}>Donate</Button>
                             <p><a href="https://www.paypal.com/webapps/mpp/merchant-fees" target="_new">PayPal comission details <b>here</b></a> under <i>Receiving and Sending Donations</i></p>
