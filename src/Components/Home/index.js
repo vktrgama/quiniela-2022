@@ -39,7 +39,7 @@ const Home = () => {
                             <p><b>(Para espaniol, usa el traductor de google que esta en la esquina inferior derecha)</b>.</p>
                             <p>To make it interesting, your participation requires a donation of $15.00, using the button below. FYI, PayPal takes a 3% (*) comission from it, so, the winner will get the rest (accumulated per participant), people with no donation will be removed when the turnament starts.</p>
                             <p>Winner takes all, no second or third place. Winner is the person with the higher number of points, if a draw happes, the person with more exact results with in the elimination brackets wins.</p>
-                            <p>To start click [User Matches] from the menu.</p>
+                            <p><b>To start click [User Matches] from the menu above.</b></p>
                             <Button variant="contained" endIcon={<SendIcon />} onClick={handlePaypal}>Donate</Button>
                             <p><a href="https://www.paypal.com/webapps/mpp/merchant-fees" target="_new">PayPal comission details <b>here</b></a> under <i>Receiving and Sending Donations</i></p>
                         </div>
