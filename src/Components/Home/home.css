@@ -22,3 +22,12 @@
 .container-right {
     width: 40%;
 }
+
+.participants-title {
+    text-align: center;
+}
+
+.participants-list {
+    height: 500px;
+    overflow: scroll;
+}
