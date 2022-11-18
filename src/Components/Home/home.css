@@ -35,3 +35,13 @@
 #donate-button a:hover {
     text-decoration-line: underline;
 }
+
+.participants-title {
+    text-align: center;
+}
+
+
+.participants-list {
+    height: 500px;
+    overflow: scroll;
+}

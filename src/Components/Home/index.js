@@ -46,12 +46,13 @@ const Home = () => {
                     </div>
                 </div>
                 <div className='container-right'>
-                    <Stack
-                        direction="column"
-                        justifyContent="flex-start"
-                        alignItems="flex-end"
-                        >
-                        <span>List of participants:</span>
+                <Stack
+                    direction="column"
+                    justifyContent="flex-start"
+                    alignItems="flex-end"
+                    >
+                    <div className='participants-list'>
+                        <span className='participants-title'>List of participants ({users.length}):</span>
                         <List dense sx={{ width: '300px', maxWidth: 360 }}>
                             {users.map((p, idx) => (
                                 <ListItem key={idx}>
@@ -89,7 +90,8 @@ const Home = () => {
                                 </ListItem>
                             ))} 
                         </List>
-                    </Stack>
+                    </div>
+                </Stack>
                 </div>
             </Stack>
         </div>
