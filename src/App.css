@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+body {
+  background-color: black;
+}
+
 .user-header {
   padding: 10px;
   margin-top: 10px;
@@ -73,11 +77,21 @@
 
 @media only screen and (max-width: 768px) {
     /* For mobile phones: */
+
+    .hero {
+      height:auto;
+    }
     .hero div:nth-child(1) {
         flex-direction: column;
     }
     .container-left {
         width: 85%;
+        margin-left: 20px;
+    }
+
+    .participants-list {
+      position: relative;
+      left: 100px;
     }
     .container-right {
         width: 50%;
