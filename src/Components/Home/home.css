@@ -3,8 +3,8 @@
     position: absolute;
     background: url('../../assets/images/khalifa_stadium10.jpg') no-repeat center center fixed;
     background-size: cover;
-    top:64px;
-    height: 100%;
+   /*  top:64px;
+    height: 100%; */
     width:100%;;
     color: white;
 }
