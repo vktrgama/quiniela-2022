@@ -14,11 +14,20 @@ const resultsLimit = { limit: 4000 };
 
 const calculatePoints = (userMatch) => {
     let totalPoints = 0;
-    const isHomeWinner = userMatch.ScoreA - userMatch.ScoreB >= 0;
-    const isRealHomeWinner = userMatch.Match.ScoreA - userMatch.Match.ScoreB >= 0;
     // Prediction: [3-1], Match Result: [2-0]
-    if(isHomeWinner && isRealHomeWinner) {
+    if ( userMatch.ScoreA - userMatch.ScoreB === 0 &&
+        userMatch.Match.ScoreA - userMatch.Match.ScoreB === 0) {
         totalPoints += 3;
+    } else {
+        if ( userMatch.ScoreA - userMatch.ScoreB > 0 &&
+            userMatch.Match.ScoreA - userMatch.Match.ScoreB > 0) {
+            totalPoints += 3;
+        } else {
+            if ( userMatch.ScoreA - userMatch.ScoreB < 0 &&
+                userMatch.Match.ScoreA - userMatch.Match.ScoreB < 0) {
+                totalPoints += 3;
+            };
+        }
     }
     // Prediction: [3-1], Match Result: [3-0] or [2-1],
     if (userMatch.ScoreA === userMatch.Match.ScoreA || userMatch.ScoreB === userMatch.Match.ScoreB) {
@@ -78,7 +87,7 @@ export const calculateUserPoints = async () => {
         { Year: { eq: process.env.REACT_APP_YEAR } }
     ]} }});
     const users = usersData.data.listUserPoints.items;
-
+    
     const Parallelism = 2;
     const asyncMethod = async (user) => {
         const userMatchesData = await API.graphql({ query: listMatchesResults, variables: { filter: { and: [
@@ -93,9 +102,9 @@ export const calculateUserPoints = async () => {
         for (const m in userMatches) {
             const matchDate = moment(userMatches[m].Match.Schedule, "DD-MMM-YY");
             const today = moment(Today);
-            if (today.diff(matchDate) >= 0) {
+            const diff = today.diff(matchDate, 'days');
+            if (diff >= 0) {
                 totalPoints += calculatePoints(userMatches[m]);
-                console.log('calculate points', totalPoints)
             };
         }
 
