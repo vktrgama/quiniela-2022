@@ -80,16 +80,22 @@ export const initUserPoints = async (userName) => {
     }
 };
 
-export const calculateUserPoints = async () => {
+export const calculateUserPoints = async (userName) => {
     // get all users
     const usersData = await API.graphql({ query: listUserPoints, variables: { filter: { and: [
         { Group: { eq: process.env.REACT_APP_GROUP } },
-        { Year: { eq: process.env.REACT_APP_YEAR } }
+        { Year: { eq: process.env.REACT_APP_YEAR } },
     ]} }});
-    const users = usersData.data.listUserPoints.items;
+    let users = usersData.data.listUserPoints.items;
     
+    if (userName) {
+        users = users.filter(u => u.UserName === userName);
+    }
+
     const Parallelism = 2;
     const asyncMethod = async (user) => {
+        const calculations = [];
+
         const userMatchesData = await API.graphql({ query: listMatchesResults, variables: { filter: { and: [
             { Group: { eq: process.env.REACT_APP_GROUP } },
             { UserName: { eq: user.UserName } },
@@ -98,13 +104,24 @@ export const calculateUserPoints = async () => {
         }});
 
         const userMatches = userMatchesData.data.listMatchesResults.items;
+        userMatches.sort((a, b) => a.Match.Order - b.Match.Order);
         let totalPoints = 0;
         for (const m in userMatches) {
             const matchDate = moment(userMatches[m].Match.Schedule, "DD-MMM-YY");
             const today = moment(Today);
             const diff = today.diff(matchDate, 'days');
             if (diff >= 0) {
-                totalPoints += calculatePoints(userMatches[m]);
+                const points = calculatePoints(userMatches[m]);
+                totalPoints += points;
+                calculations.push({
+                    id: userMatches[m].Match.Order,
+                    teamA: userMatches[m].Match.TeamA,
+                    teamB: userMatches[m].Match.TeamB,
+                    userScores: `${userMatches[m].ScoreA}-${userMatches[m].ScoreB}`,
+                    realScores: `${userMatches[m].Match.ScoreA}-${userMatches[m].Match.ScoreB}`,
+                    points,
+                    totalPoints
+                })
             };
         }
 
@@ -113,11 +130,10 @@ export const calculateUserPoints = async () => {
             query: updateUserPoints,
             variables: { input: { id: user.id, Total: totalPoints } }
         });
+        return calculations;
     };
 
-    await asyncBatch(users, asyncMethod, Parallelism);
-
-    return true;
+    return await asyncBatch(users, asyncMethod, Parallelism);
 }
 
 export const getAllScores = async () => {
