@@ -39,7 +39,7 @@ const Matches = ({ user }) => {
   const handleCalculation = async () => {
     try {
         setSpinner(true);
-        await calculateUserPoints(user.username);
+        await calculateUserPoints();
         fetchParticipants();
     } catch(e) {
         setAlert({ open: true, message: e.errors[0].message})
