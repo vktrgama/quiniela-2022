@@ -5,6 +5,7 @@ import { listMatchesResults, listUserPoints } from "../../graphql/queries";
 import { 
     createUserPoints,
     updateUserPoints,
+    createMatchesResults,
 } from "../../graphql/mutations";
 import moment from 'moment';
 import { Today } from "@mui/icons-material";
@@ -146,4 +147,33 @@ export const getAllScores = async () => {
     const matches = matchesData.data.listMatches.items;
     matches.sort((a, b) => a.Order - b.Order);
     return [...matches];
+}
+
+export const createUserScores = async () => {
+    const usersData = await API.graphql({ query: listUserPoints, variables: { filter: { and: [
+        { Group: { eq: process.env.REACT_APP_GROUP } },
+        { Year: { eq: process.env.REACT_APP_YEAR } },
+    ]} }});
+    let users = usersData.data.listUserPoints.items;
+    
+    for (const u in users) {
+        const matches = await getAllScores();
+        const Parallelism = 4;
+        // eslint-disable-next-line no-loop-func
+        const asyncMethod = async (match) => {
+          const data = {
+              matchesResultsMatchId: match.id,
+              ScoreA: 0,
+              ScoreB: 0,
+              UserName: u.username,
+              Active: true,
+              Group: process.env.REACT_APP_GROUP,
+          };
+          await API.graphql({
+              query: createMatchesResults,
+              variables: { input: data },
+          });
+        };
+        await asyncBatch(matches, asyncMethod, Parallelism);
+    }
 }
