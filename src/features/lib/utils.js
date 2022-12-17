@@ -149,7 +149,7 @@ export const getAllScores = async () => {
     return [...matches];
 }
 
-export const createUserScores = async () => {
+export const updateUserMatches = async () => {
     const usersData = await API.graphql({ query: listUserPoints, variables: { filter: { and: [
         { Group: { eq: process.env.REACT_APP_GROUP } },
         { Year: { eq: process.env.REACT_APP_YEAR } },
@@ -158,6 +158,7 @@ export const createUserScores = async () => {
     
     for (const u in users) {
         const matches = await getAllScores();
+        matches.forEach(m => m.user = users[u]);
         const Parallelism = 4;
         // eslint-disable-next-line no-loop-func
         const asyncMethod = async (match) => {
@@ -165,7 +166,7 @@ export const createUserScores = async () => {
               matchesResultsMatchId: match.id,
               ScoreA: 0,
               ScoreB: 0,
-              UserName: u.username,
+              UserName: match.user.UserName,
               Active: true,
               Group: process.env.REACT_APP_GROUP,
           };

@@ -20,7 +20,7 @@ import ConfirmDialog from '../Components/ConfirmDialog'
 import PopMsg from "../Components/PopMsg";
 import { listMatches } from "../graphql/queries";
 import { createMatches, deleteMatches, updateMatches } from "../graphql/mutations";
-import { calculateUserPoints, createUserScores } from './lib/utils'
+import { calculateUserPoints, updateUserMatches } from './lib/utils'
 import { useApp } from '../contexts/App';
 import asyncBatch from 'async-batch';
 
@@ -182,7 +182,7 @@ const Matches = ({ user }) => {
                   <Button variant="outlined"  onClick={handleCalculation}>Calculate Points</Button>
               </div>
               <div>
-                  <Button variant="outlined"  onClick={createUserScores}>Create user scores</Button>
+                  <Button variant="outlined"  onClick={updateUserMatches}>Update user matches</Button>
               </div>
               <ConfirmDialog handleAgree={handleCloseScores} disabled={closeDisable} caption="Close Score Entering" message={confirmMessage} />
           </div>
