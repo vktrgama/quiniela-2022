@@ -42,15 +42,15 @@ const Participants = () => {
     }
 
     const columns = [
-      { field: 'name', headerName: 'Participant', editable: false, flex: 1, maxWidth: 250 },
-      { field: 'totalPoints', headerName: 'Total Points', flex: 0.5, width: 150, editable: false },
-      { field: 'home', headerName: 'See others predictions', editable: false, width: 150, renderCell: (parms) => {
+      { field: 'name', headerName: 'Participant', editable: false, flex: 1 },
+      { field: 'totalPoints', headerName: 'Total Points', flex: 0.3, editable: false },
+      { field: 'home', headerName: 'See others predictions', editable: false, flex: 1, renderCell: (parms) => {
         return<IconButton component={Link} state={{ username: parms.row.name }} sx={{ position: 'relative', left: '45px'}}
                 to="/participant-matches" size='large' edge='end' color='inherit' aria-label='logo'>
             <SportsSoccerIcon />
         </IconButton>
       }},
-      { field: 'away', headerName: 'See calculatoins', editable: false, width: 150, renderCell: (parms) => {
+      { field: 'away', headerName: 'See calculatoins', editable: false, flex: 1, renderCell: (parms) => {
         return<IconButton sx={{ position: 'relative', left: '45px'}} onClick={() => { handleCalculations(parms.row.name) }}
                 size='large' edge='end' color='inherit' aria-label='logo'>
             <CalculateIcon />
