@@ -46,3 +46,15 @@
     height: 500px;
     overflow: scroll;
 }
+
+.congrats {
+    color: greenyellow;
+}
+
+.congrats span:first-child {
+    color: white;
+}
+
+.congrats span:nth-child(2) {
+    color: yellow;
+}

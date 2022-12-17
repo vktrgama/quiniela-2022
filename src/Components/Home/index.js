@@ -35,6 +35,7 @@ const Home = () => {
                 <div className='container-left'>
                     <h1>Welcome to Quiniela Qatar 2022</h1>
                     <div id="donate-button-container">
+                        {/* <h1 className='congrats'>Congratulations <span>{users[0].name}!</span> <span>you are the winner!</span></h1> */}
                         <div id="donate-button">
                             <p><b>(Para espaniol, usa el traductor de google que esta en la esquina inferior derecha)</b>.</p>
                             <p>To make it interesting, your participation requires a donation of $15.00, using the button below. FYI, PayPal takes a 3% (*) comission from it, so, the winner will get the rest (accumulated per participant), people with no donation will be removed when the turnament starts.</p>
