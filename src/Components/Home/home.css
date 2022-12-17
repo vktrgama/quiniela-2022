@@ -15,12 +15,12 @@
 
 .container-left {
     margin-top: 20px;
-    width: 40%;
+    width: 50%;
     text-align: left;
 }
 
 .container-right {
-    width: 40%;
+    width: 30%;
     margin-bottom: 100px !important;
 }
 
