@@ -28,8 +28,9 @@ const Home = () => {
             <Stack direction='row' spacing={2} justifyContent='center' alignItems='center' divider={<Divider orientation='vertical' flexItem />}>
                 <div className='container-left'>
                     <h1>Welcome to Quiniela Qatar 2022</h1>
-                    <div>
-                        <p><b>To start click [User Matches] from the menu above.</b></p>
+                    <div id="donate-button-container">
+                        <h1 className='congrats'>Congratulations <span>{users && users.length ? users[0].name : ''}!</span> <span>you are the winner!</span></h1>
+                        <p><b>(Para espaniol, usa el traductor de google que esta en la esquina inferior derecha)</b>.</p>
                     </div>
                 </div>
                 <div className='container-right'>

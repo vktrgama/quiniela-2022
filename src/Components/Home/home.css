@@ -1,10 +1,8 @@
-
 .hero {
     position: absolute;
     background: url('../../assets/images/khalifa_stadium10.jpg') no-repeat center center fixed;
     background-size: cover;
-    /* top:64px; */
-    /* height: 100%; */
+    height: 100%;
     width:100%;;
     color: white;
 }
@@ -15,12 +13,12 @@
 
 .container-left {
     margin-top: 20px;
-    width: 40%;
+    width: 50%;
     text-align: left;
 }
 
 .container-right {
-    width: 40%;
+    width: 30%;
     margin-bottom: 100px !important;
 }
 
@@ -28,7 +26,20 @@
     text-align: center;
 }
 
+
 .participants-list {
     height: 500px;
     overflow: scroll;
+}
+
+.congrats {
+    color: greenyellow;
+}
+
+.congrats span:first-child {
+    color: white;
+}
+
+.congrats span:nth-child(2) {
+    color: yellow;
 }

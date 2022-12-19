@@ -1,6 +1,12 @@
 import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
+import SendIcon from '@mui/icons-material/Send';
 
 const rules = () => {
+    const handlePaypal = () => {
+        window.location = "https://www.paypal.com/donate/?hosted_button_id=XXXXX";
+    }
+
     return (
         <div className='rules-container'>
             <Container maxWidth="lg">
@@ -34,6 +40,15 @@ const rules = () => {
                                     </ul>
                                 </li>
                             </ul>
+                        </li>
+                        <li>
+                            <div id="donate-button">
+                                <p>To make it interesting, your participation requires a donation of $XX.00, using the button below. The winner will get the rest (accumulated per participant), people with no donation will be removed when the turnament starts.</p>
+                                <p>Winner takes all, no second or third place. Winner is the person with the higher number of points, if a draw happes, the person with more exact results with in the elimination brackets wins.</p>
+                                <p><b>To start click [User Matches] from the menu above.</b></p>
+                                <Button variant="contained" endIcon={<SendIcon />} onClick={handlePaypal}>Donate</Button>
+                                <p><a href="https://www.paypal.com/webapps/mpp/merchant-fees" target="_new">PayPal comission details <b>here</b></a> under <i>[Receiving and Sending Donations]</i></p>
+                            </div>
                         </li>
                     </ul>
                     <h3>TIE BREAKERS</h3>
