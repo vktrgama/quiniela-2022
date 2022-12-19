@@ -26,7 +26,7 @@ const Home = () => {
     }, []);
 
     const handlePaypal = () => {
-        window.location = "https://www.paypal.com/donate/?hosted_button_id=FM3NTSGGXKBWJ";
+        window.location = "https://www.paypal.com/donate/?hosted_button_id=XXXXX";
     }
 
     return <div className='home'>
@@ -35,10 +35,10 @@ const Home = () => {
                 <div className='container-left'>
                     <h1>Welcome to Quiniela Qatar 2022</h1>
                     <div id="donate-button-container">
-                        <h1 className='congrats'>Congratulations <span>{users && users.length ? users[0].name : ''}!</span> <span>you are the winner! $126.72 Dlls. will be send to you.</span></h1>
+                        <h1 className='congrats'>Congratulations <span>{users && users.length ? users[0].name : ''}!</span> <span>you are the winner!</span></h1>
                         <div id="donate-button">
                             <p><b>(Para espaniol, usa el traductor de google que esta en la esquina inferior derecha)</b>.</p>
-                            <p>To make it interesting, your participation requires a donation of $15.00, using the button below. FYI, PayPal takes a 3% (*) comission from it, so, the winner will get the rest (accumulated per participant), people with no donation will be removed when the turnament starts.</p>
+                            <p>To make it interesting, your participation requires a donation of $XX.00, using the button below. The winner will get the rest (accumulated per participant), people with no donation will be removed when the turnament starts.</p>
                             <p>Winner takes all, no second or third place. Winner is the person with the higher number of points, if a draw happes, the person with more exact results with in the elimination brackets wins.</p>
                             <p><b>To start click [User Matches] from the menu above.</b></p>
                             <Button variant="contained" endIcon={<SendIcon />} onClick={handlePaypal}>Donate</Button>
