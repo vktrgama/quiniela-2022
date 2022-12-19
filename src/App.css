@@ -71,6 +71,18 @@
   align-items: baseline;
 }
 
+#donate-button button span {
+  display: inline-block;
+}
+
+#donate-button a {
+  text-decoration: none;
+}
+
+#donate-button a:hover {
+  text-decoration-line: underline;
+}
+
 @media only screen and (max-width: 768px) {
     /* For mobile phones: */
 
